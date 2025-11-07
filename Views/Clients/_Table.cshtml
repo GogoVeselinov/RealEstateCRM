@@ -1,0 +1,55 @@
+@model List<RealEstateCRM.Models.Clients.ClientListItemViewModel>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Име</th>
+            <th>Фамилия</th>
+            <th>Имейл</th>
+            <th>Телефон</th>
+            <th>Тип</th>
+            <th>Коментари</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr><td colspan="7" class="muted">Няма данни</td></tr>
+        }
+        else
+        {
+            @foreach (var client in Model)
+            {
+                <tr>
+                    <td>@client.FirstName</td>
+                    <td>@client.LastName</td>
+                    <td>@client.Email</td>
+                    <td>@client.Phone</td>
+                    <td>@client.Type</td>
+                    <td style="max-width: 200px;">
+                        @if (!string.IsNullOrWhiteSpace(client.Comments))
+                        {
+                            <div style="max-height: 60px; overflow-y: auto; font-size: 0.9em; color: #666;">
+                                @client.Comments
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="muted">—</span>
+                        }
+                    </td>
+                    <td style="text-align:right;">
+                        @if ((bool)(ViewBag.CanEdit ?? false))
+                        {
+                            <button class="btn secondary" onclick="openEdit('@client.Id')">Редактирай</button>
+                            <button class="btn secondary" onclick="del('@client.Id')">Изтрий</button>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@Html.AntiForgeryToken()

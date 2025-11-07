@@ -1,0 +1,187 @@
+﻿@model RealEstateCRM.Models.ViewModels.DashboardViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Начало";
+}
+
+<style>
+    .page {
+        display: grid;
+        grid-template-columns: 2fr 1fr; /* основна зона + страничен бар */
+        gap: 16px;
+        align-items: start;
+    }
+    .side { position: sticky; top: 16px; }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+    .card {
+        border: 1px solid #e5e5e5;
+        background: #fff;
+        padding: 16px;
+    }
+    .stat { font-size: 28px; font-weight: 600; }
+    .muted { color: #444; }
+
+    .table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .table th, .table td { padding: 8px 10px; border-bottom: 1px solid #e5e5e5; }
+
+    .section { margin-top: 24px; }
+    .right { text-align: right; white-space: nowrap; }
+
+    @@media (max-width: 900px) {
+        .page { grid-template-columns: 1fr; }
+        .grid { grid-template-columns: 1fr; }
+        .side { position: static; }
+    }
+</style>
+
+<div class="page">
+  <!-- ЛЯВА КОЛОНА: твоето съдържание -->
+  <div>
+    <h2>Добре дошъл, @Model.GreetingName</h2>
+
+    <div class="grid">
+        <div class="card">
+            <div class="muted">Имоти</div>
+            <div class="stat">@Model.PropertiesCount</div>
+        </div>
+        <div class="card">
+            <div class="muted">Клиенти</div>
+            <div class="stat">@Model.ClientsCount</div>
+        </div>
+        <div class="card">
+            <div class="muted">Огледи</div>
+            <div class="stat">@Model.VisitsCount</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Последни имоти</h3>
+        <div class="card">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Заглавие</th>
+                        <th>Адрес</th>
+                        <th>Тип</th>
+                        <th>Статус</th>
+                        <th>Цена</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.RecentProperties.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="5" class="muted">Няма данни</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var p in Model.RecentProperties)
+                        {
+                            <tr>
+                                <td><a asp-controller="Properties" asp-action="Edit" asp-route-id="@p.Id">@p.Title</a></td>
+                                <td>@p.Address</td>
+                                <td>@p.Type</td>
+                                <td>@p.Status</td>
+                                <td>@p.Price @p.Currency</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Предстоящи огледи</h3>
+        <div class="card">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Дата/час</th>
+                        <th>Имот</th>
+                        <th>Клиент</th>
+                        <th>Бележка</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.UpcomingVisits.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="4" class="muted">Няма насрочени огледи</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var v in Model.UpcomingVisits)
+                        {
+                            <tr>
+                                <td>@v.VisitAtLocal.ToString("dd.MM.yyyy HH:mm")</td>
+                                <td>
+                                    @if (v.Property != null)
+                                    {
+                                        <a asp-controller="Properties" asp-action="Edit" asp-route-id="@v.PropertyId">@v.Property.Title</a>
+                                    }
+                                </td>
+                                <td>@(v.Client != null ? (v.Client.FirstName + " " + v.Client.LastName) : "-")</td>
+                                <td>@(string.IsNullOrWhiteSpace(v.Notes) ? "-" : v.Notes)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+  </div>
+
+  <!-- ДЯСНА КОЛОНА: страничен бар с общи данни -->
+  <aside class="side">
+    <div class="card">
+        <h3 style="margin-top:0;">Обобщение</h3>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>Активни имоти</td>
+                    <td class="right">@Model.ActivePropertiesCount</td>
+                </tr>
+                <tr>
+                    <td>Обща стойност (активни)</td>
+                    <td class="right">@Model.ActivePropertiesValueSum.ToString("N0") @((Model.RecentProperties.FirstOrDefault()?.Currency) ?? "EUR")</td>
+                </tr>
+                <tr>
+                    <td>Средна цена (активни)</td>
+                    <td class="right">@Model.ActivePropertiesAvgPrice.ToString("N0") @((Model.RecentProperties.FirstOrDefault()?.Currency) ?? "EUR")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+        <h3 style="margin-top:0;">Имотите по статус</h3>
+        <table class="table">
+            <thead><tr><th>Статус</th><th class="right">Бр.</th></tr></thead>
+            <tbody>
+                @if (!Model.PropertiesByStatus.Any())
+                {
+                    <tr><td colspan="2" class="muted">Няма данни</td></tr>
+                }
+                else
+                {
+                    @foreach (var row in Model.PropertiesByStatus)
+                    {
+                        <tr>
+                            <td>@row.Name</td>
+                            <td class="right">@row.Count</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+  </aside>
+</div>

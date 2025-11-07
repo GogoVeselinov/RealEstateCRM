@@ -1,0 +1,82 @@
+@model RealEstateCRM.Models.ViewModels.PropertyFormViewModel
+@using RealEstateCRM.Models.Common
+
+<form method="post" action="@(Model.Id != Guid.Empty ? $"/Properties/Edit?id={Model.Id}" : "/Properties/Create")" onsubmit="event.preventDefault(); submitForm(this);">
+    @Html.AntiForgeryToken()
+    
+    @if (Model.Id != Guid.Empty)
+    {
+        <input type="hidden" name="Id" value="@Model.Id" />
+    }
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="margin: 0;">@(Model.Id != Guid.Empty ? "Редактиране на имот" : "Нов имот")</h3>
+        <button type="button" onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label for="Title">Заглавие:</label>
+        <input type="text" id="Title" name="Title" value="@Model.Title" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" required maxlength="200" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label for="Address">Адрес:</label>
+        <input type="text" id="Address" name="Address" value="@Model.Address" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" required maxlength="500" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+        <div>
+            <label for="Type">Тип:</label>
+            <select id="Type" name="Type" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;">
+                @foreach (var propertyType in Enum.GetValues(typeof(PropertyType)).Cast<PropertyType>())
+                {
+                    <option value="@propertyType" selected="@(Model.Type == propertyType)">@propertyType</option>
+                }
+            </select>
+            <span asp-validation-for="Type" class="text-danger"></span>
+        </div>
+        <div>
+            <label for="Status">Статус:</label>
+            <select id="Status" name="Status" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;">
+                @foreach (var status in Enum.GetValues(typeof(ListingStatus)).Cast<ListingStatus>())
+                {
+                    <option value="@status" selected="@(Model.Status == status)">@status</option>
+                }
+            </select>
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 12px;">
+        <div>
+            <label for="Price">Цена:</label>
+            <input type="number" id="Price" name="Price" value="@Model.Price" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" required min="0.01" step="0.01" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div>
+            <label for="Currency">Валута:</label>
+            <input type="text" id="Currency" name="Currency" value="@Model.Currency" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" required maxlength="10" />
+            <span asp-validation-for="Currency" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+        <div>
+            <label for="AreaSqM">Площ (кв.м):</label>
+            <input type="number" id="AreaSqM" name="AreaSqM" value="@Model.AreaSqM" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" min="0.1" step="0.1" />
+            <span asp-validation-for="AreaSqM" class="text-danger"></span>
+        </div>
+        <div>
+            <label for="Rooms">Стаи:</label>
+            <input type="number" id="Rooms" name="Rooms" value="@Model.Rooms" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" min="1" max="50" />
+            <span asp-validation-for="Rooms" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button type="button" onclick="closeModal()" class="btn secondary">Отказ</button>
+        <button type="submit" class="btn">@(Model.Id != Guid.Empty ? "Запази" : "Създай")</button>
+    </div>
+</form>

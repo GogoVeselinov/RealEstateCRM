@@ -1,0 +1,177 @@
+@model IEnumerable<RealEstateCRM.Models.ViewModels.VisitListItemViewModel>
+@using RealEstateCRM.Models.Common
+@{
+    ViewData["Title"] = "Огледи";
+    var canEdit = (bool)(ViewBag.CanEdit ?? false);
+}
+
+<style>
+    .toolbar {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 12px;
+        flex-wrap: wrap
+    }
+
+    .input,
+    select {
+        padding: 8px;
+        border: 1px solid #e5e5e5
+    }
+
+    .btn {
+        padding: 8px 12px;
+        border: 1px solid #000;
+        background: #000;
+        color: #fff;
+        cursor: pointer
+    }
+
+    .btn.secondary {
+        background: #fff;
+        color: #000
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse
+    }
+
+    th,
+    td {
+        padding: 10px;
+        border-bottom: 1px solid #e5e5e5
+    }
+
+    tr:hover {
+        background: #f5f5f5
+    }
+
+    .badge {
+        border: 1px solid #000;
+        padding: 2px 6px;
+        font-size: 12px
+    }
+
+    .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .5);
+        display: none;
+        align-items: center;
+        justify-content: center
+    }
+
+    .modal .card {
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        width: min(640px, 90vw);
+        padding: 16px
+    }
+
+    .right {
+        text-align: right;
+        white-space: nowrap
+    }
+</style>
+
+<h2>Огледи</h2>
+
+<div class="toolbar">
+    <input id="q" class="input" placeholder="Търси в бележки/резултат" />
+    <input id="from" class="input" type="datetime-local" />
+    <input id="to" class="input" type="datetime-local" />
+    <select id="status" class="input">
+        <option value="">Статус</option>
+        @foreach (var s in Enum.GetValues(typeof(VisitStatus)))
+        {
+            <option value="@s">@s</option>
+        }
+    </select>
+    <select id="propertyId" class="input">
+        <option value="">Имот</option>
+        @foreach (var p in (SelectList)ViewBag.Properties)
+        {
+            <option value="@p.Value">@p.Text</option>
+        }
+    </select>
+    <select id="clientId" class="input">
+        <option value="">Клиент</option>
+        @foreach (var c in (SelectList)ViewBag.Clients)
+        {
+            <option value="@c.Value">@c.Text</option>
+        }
+    </select>
+    <button class="btn secondary" onclick="reloadList()">Филтрирай</button>
+    @if (canEdit)
+    {
+        <button class="btn" onclick="openCreate()">+ Нов оглед</button>
+    }
+</div>
+
+<div id="listContainer">
+    <partial name="_Table" model="Model" />
+</div>
+
+<div id="modal" class="modal">
+    <div class="card" id="modalContent"></div>
+</div>
+
+@section Scripts {
+    <script>
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modalContent');
+
+        function showModal(html) { modalContent.innerHTML = html; modal.style.display = 'flex'; }
+        function closeModal() { modal.style.display = 'none'; modalContent.innerHTML = ''; }
+
+        async function reloadList() {
+            const params = new URLSearchParams();
+            const q = document.getElementById('q').value;
+            const from = document.getElementById('from').value;
+            const to = document.getElementById('to').value;
+            const status = document.getElementById('status').value;
+            const propertyId = document.getElementById('propertyId').value;
+            const clientId = document.getElementById('clientId').value;
+
+            if (q) params.append('q', q);
+            if (from) params.append('from', from);
+            if (to) params.append('to', to);
+            if (status) params.append('status', status);
+            if (propertyId) params.append('propertyId', propertyId);
+            if (clientId) params.append('clientId', clientId);
+
+            const html = await fetch('/Visits?' + params.toString(), { headers: { 'X-Partial': 'true' } }).then(r => r.text());
+            document.getElementById('listContainer').innerHTML = html;
+        }
+
+        async function openCreate() {
+            const html = await fetch('/Visits/Create').then(r => r.text());
+            showModal(html);
+        }
+        async function openEdit(id) {
+            const html = await fetch('/Visits/Edit?id=' + id).then(r => r.text());
+            showModal(html);
+        }
+        async function submitForm(form) {
+            const fd = new FormData(form);
+            const res = await fetch(form.action, { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            if (res.ok) { closeModal(); reloadList(); }
+            else { const html = await res.text(); showModal(html); }
+        }
+        async function del(id) {
+            const token = document.getElementById('__aft').value; // от _Layout
+            if (!confirm('Да изтрия ли този оглед?')) return;
+            const res = await fetch('/Visits/Delete?id=' + id, { method: 'DELETE', headers: { 'RequestVerificationToken': token } });
+            if (res.ok) reloadList();
+        }
+        async function setStatus(id, status) {
+            const token = document.getElementById('__aft').value;
+            const fd = new FormData(); fd.append('id', id); fd.append('status', status);
+            const res = await fetch('/Visits/SetStatus', { method: 'POST', body: fd, headers: { 'RequestVerificationToken': token } });
+            if (res.ok) reloadList();
+        }
+        function ics(id) { window.location = '/Visits/Ics?id=' + id; }
+    </script>
+}

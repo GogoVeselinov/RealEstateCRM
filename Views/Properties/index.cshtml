@@ -1,0 +1,95 @@
+@model List<RealEstateCRM.Models.ViewModels.PropertyListItemViewModel>
+@using RealEstateCRM.Models.Common
+@{
+    ViewData["Title"] = "Properties";
+    var canEdit = (bool)(ViewBag.CanEdit ?? false);
+}
+
+<style>
+.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.input,select{padding:8px;border:1px solid #e5e5e5}
+.btn{padding:8px 12px;border:1px solid #000;background:#000;color:#fff;cursor:pointer}
+.btn.secondary{background:#fff;color:#000}
+.table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #e5e5e5}
+tr:hover{background:#f5f5f5}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center}
+.modal .card{background:#fff;border:1px solid #e5e5e5;width:min(640px,90vw);padding:16px}
+</style>
+
+<h2>Properties</h2>
+
+<div class="toolbar">
+    <input id="q" class="input" placeholder="Търсене по заглавие/адрес" />
+    <select id="type" class="input">
+        <option value="">Тип</option>
+        @foreach (var val in Enum.GetValues(typeof(PropertyType)))
+        { <option value="@val">@val</option> }
+    </select>
+    <select id="status" class="input">
+        <option value="">Статус</option>
+        @foreach (var val in Enum.GetValues(typeof(ListingStatus)))
+        { <option value="@val">@val</option> }
+    </select>
+    <button class="btn secondary" onclick="reloadList()">Филтрирай</button>
+    @if (canEdit)
+    {
+        <button class="btn" onclick="openCreate()">+ Нов имот</button>
+    }
+</div>
+
+<div id="listContainer">
+    <partial name="_Table" model="Model" />
+</div>
+
+<div id="modal" class="modal" aria-hidden="true"></div>
+
+@section Scripts {
+<script>
+const modal = document.getElementById('modal');
+
+function showModal(html){ modal.innerHTML = `<div class="card">${html}</div>`; modal.style.display='flex'; }
+function closeModal(){ modal.style.display='none'; modal.innerHTML=''; }
+
+async function reloadList(){
+    const q = document.getElementById('q').value;
+    const type = document.getElementById('type').value;
+    const status = document.getElementById('status').value;
+    const params = new URLSearchParams();
+    if(q) params.append('q', q);
+    if(type) params.append('type', type);
+    if(status) params.append('status', status);
+
+    const html = await fetch('/Properties?'+params.toString(), { headers: {'X-Partial':'true'} }).then(r=>r.text());
+    document.getElementById('listContainer').innerHTML = html;
+}
+
+async function openCreate(){
+    const html = await fetch('/Properties/Create').then(r=>r.text());
+    showModal(html);
+}
+async function openEdit(id){
+    const html = await fetch('/Properties/Edit?id='+id).then(r=>r.text());
+    showModal(html);
+}
+
+async function submitForm(form){
+    const fd = new FormData(form);
+    const res = await fetch(form.action, { method:'POST', body:fd, headers: {'X-Requested-With':'XMLHttpRequest'} });
+    if(res.ok){
+        closeModal(); await reloadList();
+    } else {
+        // върни формата с грешките
+        const html = await res.text();
+        showModal(html);
+    }
+}
+
+async function del(id){
+    const token = document.getElementById('__aft').value; // от _Layout
+    if(!confirm('Сигурни ли сте, че искате да изтриете имота?')) return;
+    const res = await fetch('/Properties/Delete?id='+id, { method:'DELETE', headers: { 'RequestVerificationToken': token }});
+    if(res.ok) await reloadList();
+}
+</script>
+}

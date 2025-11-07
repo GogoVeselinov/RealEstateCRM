@@ -1,0 +1,93 @@
+@model RealEstateCRM.Models.ViewModels.VisitFormViewModel
+@using RealEstateCRM.Models.Common
+
+<form method="post" action="@(Model.Id.HasValue ? $"/Visits/Edit?id={Model.Id}" : "/Visits/Create")" onsubmit="event.preventDefault(); submitForm(this);">
+    @Html.AntiForgeryToken()
+    
+    @if (Model.Id.HasValue)
+    {
+        <input type="hidden" name="Id" value="@Model.Id" />
+    }
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="margin: 0;">@(Model.Id.HasValue ? "Редактиране на оглед" : "Нов оглед")</h3>
+        <button type="button" onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label for="PropertyId">Имот:</label>
+        <select id="PropertyId" name="PropertyId" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" required>
+            <option value="">Изберете имот</option>
+            @foreach (var p in (SelectList)ViewBag.Properties)
+            {
+                <option value="@p.Value" selected="@(Model.PropertyId.ToString() == p.Value)">@p.Text</option>
+            }
+        </select>
+        <span asp-validation-for="PropertyId" class="text-danger"></span>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label for="ClientId">Клиент:</label>
+        <select id="ClientId" name="ClientId" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;">
+            <option value="">Изберете клиент (опционално)</option>
+            @foreach (var c in (SelectList)ViewBag.Clients)
+            {
+                <option value="@c.Value" selected="@(Model.ClientId?.ToString() == c.Value)">@c.Text</option>
+            }
+        </select>
+        <span asp-validation-for="ClientId" class="text-danger"></span>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 12px;">
+        <div>
+            <label for="VisitAtLocal">Дата и час:</label>
+            <input type="datetime-local" id="VisitAtLocal" name="VisitAtLocal" value="@Model.VisitAtLocal.ToString("yyyy-MM-ddTHH:mm")" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" required />
+            <span asp-validation-for="VisitAtLocal" class="text-danger"></span>
+        </div>
+        <div>
+            <label for="DurationMin">Продължителност (мин.):</label>
+            <input type="number" id="DurationMin" name="DurationMin" value="@Model.DurationMin" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" min="10" max="300" />
+            <span asp-validation-for="DurationMin" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label for="Status">Статус:</label>
+        <select id="Status" name="Status" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" required>
+            @foreach (var status in Enum.GetValues(typeof(VisitStatus)).Cast<VisitStatus>())
+            {
+                <option value="@status" selected="@(Model.Status == status)">@status</option>
+            }
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label for="Location">Локация:</label>
+        <input type="text" id="Location" name="Location" value="@Model.Location" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" />
+        <span asp-validation-for="Location" class="text-danger"></span>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label for="Notes">Бележки:</label>
+        <textarea id="Notes" name="Notes" class="input" style="width: 100%; margin-top: 4px; min-height: 60px; resize: vertical; box-sizing: border-box;" placeholder="Бележки за огледа...">@Model.Notes</textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label for="Outcome">Резултат:</label>
+        <textarea id="Outcome" name="Outcome" class="input" style="width: 100%; margin-top: 4px; min-height: 60px; resize: vertical; box-sizing: border-box;" placeholder="Резултат от огледа...">@Model.Outcome</textarea>
+        <span asp-validation-for="Outcome" class="text-danger"></span>
+    </div>
+    
+    <div style="margin-bottom: 16px;">
+        <label for="NextActionAt">Следващо действие:</label>
+        <input type="datetime-local" id="NextActionAt" name="NextActionAt" value="@(Model.NextActionAt?.ToString("yyyy-MM-ddTHH:mm"))" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" />
+        <span asp-validation-for="NextActionAt" class="text-danger"></span>
+    </div>
+    
+    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button type="button" onclick="closeModal()" class="btn secondary">Отказ</button>
+        <button type="submit" class="btn">@(Model.Id.HasValue ? "Запази" : "Създай")</button>
+    </div>
+</form>

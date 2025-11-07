@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="bg">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RealEstate CRM</title>
+    <style>
+        :root {
+            --fg: #111;
+            --bg: #fff;
+            --line: #e5e5e5;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--fg);
+            font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            width: min(360px, 90%);
+            border: 1px solid var(--line);
+            padding: 32px;
+            background: #fff;
+        }
+
+        h2 {
+            margin-top: 0;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--line);
+            background: var(--bg);
+            color: var(--fg);
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: 2px solid #000;
+            outline-offset: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #000;
+            background: #000;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #222;
+        }
+
+        .text-danger {
+            color: #c00;
+            font-size: 13px;
+        }
+
+        footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 12px;
+            color: #444;
+            border-top: 1px solid var(--line);
+            padding-top: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        @RenderBody()
+        <footer>© @DateTime.Now.Year RealEstate CRM</footer>
+        @RenderSection("Scripts", required: false)
+
+    </div>
+</body>
+
+</html>

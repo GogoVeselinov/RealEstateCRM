@@ -1,0 +1,63 @@
+@model RealEstateCRM.Models.Clients.ClientFormViewModel
+@using RealEstateCRM.Models.Common
+
+<form method="post" action="@(Model.Id.HasValue ? $"/Clients/Edit?id={Model.Id}" : "/Clients/Create")" onsubmit="event.preventDefault(); submitForm(this);">
+    @Html.AntiForgeryToken()
+    
+    @if (Model.Id.HasValue)
+    {
+        <input type="hidden" name="Id" value="@Model.Id" />
+    }
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="margin: 0;">@(Model.Id.HasValue ? "Редактиране на клиент" : "Нов клиент")</h3>
+        <button type="button" onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label for="FirstName">Име:</label>
+        <input type="text" id="FirstName" name="FirstName" value="@Model.FirstName" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" required maxlength="60" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label for="LastName">Фамилия:</label>
+        <input type="text" id="LastName" name="LastName" value="@Model.LastName" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" required maxlength="60" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label for="Email">Имейл:</label>
+        <input type="email" id="Email" name="Email" value="@Model.Email" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label for="Phone">Телефон:</label>
+        <input type="text" id="Phone" name="Phone" value="@Model.Phone" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label for="Type">Тип клиент:</label>
+        <select id="Type" name="Type" class="input" style="width: 100%; margin-top: 4px; box-sizing: border-box;">
+            @foreach (var clientType in Enum.GetValues(typeof(ClientType)).Cast<ClientType>())
+            {
+                <option value="@clientType" selected="@(Model.Type == clientType)">@clientType</option>
+            }
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+    
+    <div style="margin-bottom: 16px;">
+        <label for="Comments">Коментари:</label>
+        <textarea id="Comments" name="Comments" class="input" style="width: 100%; margin-top: 4px; min-height: 80px; resize: vertical; box-sizing: border-box;" maxlength="1000" placeholder="Коментари за комуникация между мениджърите...">@Model.Comments</textarea>
+        <span asp-validation-for="Comments" class="text-danger"></span>
+        <small style="color: #666;">Макс. 1000 символа</small>
+    </div>
+    
+    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button type="button" onclick="closeModal()" class="btn secondary">Отказ</button>
+        <button type="submit" class="btn">@(Model.Id.HasValue ? "Запази" : "Създай")</button>
+    </div>
+</form>
