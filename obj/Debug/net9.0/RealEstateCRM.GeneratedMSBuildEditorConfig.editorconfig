@@ -17,85 +17,85 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = RealEstateCRM
 build_property.RootNamespace = RealEstateCRM
-build_property.ProjectDir = C:\Users\Go6ko\Desktop\RealEstateCRM\
+build_property.ProjectDir = C:\Users\User\OneDrive\Работен плот\diplomna\RealEstateCRM\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = true
-build_property.MSBuildProjectDirectory = C:\Users\Go6ko\Desktop\RealEstateCRM
+build_property.MSBuildProjectDirectory = C:\Users\User\OneDrive\Работен плот\diplomna\RealEstateCRM
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Account/Login.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Admin/index.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Admin/index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5caW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Clients/index.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Clients/index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50c1xpbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Clients/_Form.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Clients/_Form.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50c1xfRm9ybS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Clients/_Table.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Clients/_Table.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50c1xfVGFibGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Home/Index.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Properties/index.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Properties/index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvcGVydGllc1xpbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Properties/_Form.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Properties/_Form.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvcGVydGllc1xfRm9ybS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Properties/_Table.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Properties/_Table.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvcGVydGllc1xfVGFibGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Shared/Error.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Shared/_Layout_Login.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Shared/_Layout_Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRfTG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Visits/index.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Visits/index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlzaXRzXGluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Visits/_Form.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Visits/_Form.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlzaXRzXF9Gb3JtLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Visits/_Table.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Visits/_Table.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlzaXRzXF9UYWJsZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/_ViewImports.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/_ViewStart.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Go6ko/Desktop/RealEstateCRM/Views/Shared/_Layout.cshtml]
+[C:/Users/User/OneDrive/Работен плот/diplomna/RealEstateCRM/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-fsnh88m9hp
