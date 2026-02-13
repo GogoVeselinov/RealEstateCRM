@@ -5118,23 +5118,31 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Go6ko\\.nuget\\packages\\": {},
+    "C:\\Users\\User\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
+<<<<<<< HEAD
       "projectUniqueName": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\RealEstateCRM\\RealEstateCRM.csproj",
       "projectName": "RealEstateCRM",
       "projectPath": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\RealEstateCRM\\RealEstateCRM.csproj",
       "packagesPath": "C:\\Users\\Go6ko\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\RealEstateCRM\\obj\\",
+=======
+      "projectUniqueName": "C:\\Users\\User\\OneDrive\\Работен плот\\diplomna\\RealEstateCRM\\RealEstateCRM.csproj",
+      "projectName": "RealEstateCRM",
+      "projectPath": "C:\\Users\\User\\OneDrive\\Работен плот\\diplomna\\RealEstateCRM\\RealEstateCRM.csproj",
+      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\User\\OneDrive\\Работен плот\\diplomna\\RealEstateCRM\\obj\\",
+>>>>>>> e29672fd7713e7efaac1ff3097de64c02f76a974
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Go6ko\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
