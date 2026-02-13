@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Antiforgery;
 using RealEstateCRM.Data;
 using RealEstateCRM.Models.Identity;
 using RealEstateCRM.Models.Entities;
@@ -15,10 +16,11 @@ namespace RealEstateCRM.Controllers
     {
         private readonly AppDbContext _db;
         private readonly UserManager<ApplicationUser> _um;
+        private readonly IAntiforgery _antiforgery;
 
-        public PropertiesController(AppDbContext db, UserManager<ApplicationUser> um)
+        public PropertiesController(AppDbContext db, UserManager<ApplicationUser> um, IAntiforgery antiforgery)
         {
-            _db = db; _um = um;
+            _db = db; _um = um; _antiforgery = antiforgery;
         }
 
         // List + филтри + partial reload
@@ -152,7 +154,16 @@ namespace RealEstateCRM.Controllers
             p.SellerClientId = vm.SellerClientId;
 
             await _db.SaveChangesAsync();
-            return Ok(new { ok = true });
+            return Ok(new {
+                ok = true,
+                id = p.Id,
+                title = p.Title,
+                address = p.Address,
+                type = p.Type.ToString(),
+                status = p.Status.ToString(),
+                price = p.Price,
+                currency = p.Currency
+            });
         }
 
         // DELETE (soft delete през IsDeleted)
@@ -171,7 +182,89 @@ namespace RealEstateCRM.Controllers
 
             p.IsDeleted = true;
             await _db.SaveChangesAsync();
-            return Ok(new { ok = true });
+            return Ok(new {
+                ok = true,
+                id = p.Id,
+                title = p.Title,
+                address = p.Address,
+                type = p.Type.ToString(),
+                status = p.Status.ToString(),
+                price = p.Price,
+                currency = p.Currency
+            });
+        }
+
+        // AJAX inline edit (accepts JSON)
+        [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Manager}")]
+        [HttpPost]
+        public async Task<IActionResult> AjaxEdit([FromBody] InlineEditDto dto)
+        {
+            // Quick diagnostics: ensure header is present
+            var headerToken = Request.Headers["RequestVerificationToken"].ToString();
+            if (string.IsNullOrWhiteSpace(headerToken))
+            {
+                return BadRequest("Missing RequestVerificationToken header");
+            }
+
+            // Validate antiforgery token from header (client sends RequestVerificationToken header)
+            try
+            {
+                await _antiforgery.ValidateRequestAsync(HttpContext);
+            }
+            catch (AntiforgeryValidationException ex)
+            {
+                return BadRequest("Invalid antiforgery token: " + ex.Message);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var errs = string.Join("; ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).Where(s => !string.IsNullOrWhiteSpace(s)));
+                if (string.IsNullOrWhiteSpace(errs)) errs = "Invalid payload";
+                return BadRequest(errs);
+            }
+
+            if (dto == null) return BadRequest("Invalid payload: request body could not be parsed");
+            if (dto.Id == Guid.Empty) return BadRequest("Missing or invalid Id");
+
+            var p = await _db.Properties.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (p == null) return NotFound();
+
+            if (User.IsInRole(AppRoles.Manager))
+            {
+                var me = (await _um.GetUserAsync(User))!.Id;
+                if (p.OwnerUserId != me) return Forbid();
+            }
+
+            // Only update provided fields
+            if (dto.Title != null) p.Title = dto.Title.Trim();
+            if (dto.Address != null) p.Address = dto.Address.Trim();
+            if (dto.Price.HasValue) p.Price = dto.Price.Value;
+            if (dto.Currency != null) p.Currency = dto.Currency.Trim();
+            if (dto.Type.HasValue) p.Type = dto.Type.Value;
+            if (dto.Status.HasValue) p.Status = dto.Status.Value;
+
+            await _db.SaveChangesAsync();
+            return Ok(new {
+                ok = true,
+                id = p.Id,
+                title = p.Title,
+                address = p.Address,
+                type = p.Type.ToString(),
+                status = p.Status.ToString(),
+                price = p.Price,
+                currency = p.Currency
+            });
+        }
+
+        public class InlineEditDto
+        {
+            public Guid Id { get; set; }
+            public string? Title { get; set; }
+            public string? Address { get; set; }
+            public decimal? Price { get; set; }
+            public string? Currency { get; set; }
+            public PropertyType? Type { get; set; }
+            public ListingStatus? Status { get; set; }
         }
     }
 }

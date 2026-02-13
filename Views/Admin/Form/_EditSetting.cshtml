@@ -1,0 +1,36 @@
+@model RealEstateCRM.Models.ViewModels.AppSettingViewModel
+
+<form id="editSettingForm-@Model.Id" data-ajax-form data-setting-id="@Model.Id">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.Id" />
+    
+    <div style="margin-bottom: 12px;">
+        <strong>Ключ:</strong> <code>@Model.Key</code>
+    </div>
+    
+    @if (!string.IsNullOrEmpty(Model.Description))
+    {
+        <div style="margin-bottom: 12px; color: #666;">
+            <strong>Описание:</strong> @Model.Description
+        </div>
+    }
+    
+    <div style="margin-bottom: 12px;">
+        <label for="value-@Model.Id" style="display: block; margin-bottom: 4px;"><strong>Нова стойност:</strong></label>
+        <input type="text" 
+               id="value-@Model.Id" 
+               name="value" 
+               value="@Model.Value" 
+               required 
+               style="width: 100%; padding: 8px; border: 1px solid #000;" />
+    </div>
+    
+    <div style="padding: 8px; background: #fff3cd; border: 1px solid #000; margin-bottom: 12px;">
+        ⚠️ <strong>Внимание:</strong> Промяната на тази настройка може да повлияе на поведението на системата!
+    </div>
+    
+    <div style="text-align: right;">
+        <button type="button" class="btn secondary" style="margin-right: 8px;" onclick="hideEditForm('@Model.Id')">Отказ</button>
+        <button type="submit" class="btn">Запази</button>
+    </div>
+</form>

@@ -28,5 +28,7 @@ namespace RealEstateCRM.Models.Entities
 
         public string OwnerUserId { get; set; } = default!;
         public ApplicationUser? OwnerUser { get; set; }
+
+        public ICollection<VisitPayment> Payments { get; set; } = new List<VisitPayment>();
     }
 }

@@ -1,0 +1,166 @@
+@model RealEstateCRM.Models.Entities.Visit
+@using RealEstateCRM.Models.Common
+@{
+    ViewData["Title"] = "Детайли на Оглед";
+    var visitStatusNames = new Dictionary<int, string> { {0, "Планиран"}, {1, "Приключен"}, {2, "Отложен"}, {3, "Отменен"} };
+}
+
+<style>
+  .details-header { background: #f5f5f5; padding: 16px; border: 1px solid #e5e5e5; border-radius: 6px; margin-bottom: 20px; }
+  .detail-row { display: flex; gap: 16px; margin-bottom: 12px; }
+  .detail-col { flex: 1; }
+  .detail-label { font-weight: 600; color: #666; font-size: 12px; margin-bottom: 4px; }
+  .detail-value { font-size: 14px; }
+  .section-title { font-weight: 700; font-size: 16px; margin-top: 24px; margin-bottom: 12px; border-bottom: 2px solid #000; padding-bottom: 8px; }
+</style>
+
+<div style="max-width:900px;margin:0 auto;padding:16px">
+  <a href="/Visits" style="margin-bottom:12px;display:inline-block;padding:6px 12px;border:1px solid #000;background:#fff;color:#000;cursor:pointer;text-decoration:none">← Назад</a>
+
+  <div class="details-header">
+    <div class="detail-row">
+      <div class="detail-col">
+        <div class="detail-label">Дата на Оглед</div>
+        <div class="detail-value">@Model.VisitAtLocal.ToString("dd.MM.yyyy HH:mm")</div>
+      </div>
+      <div class="detail-col">
+        <div class="detail-label">Продължителност</div>
+        <div class="detail-value">@Model.DurationMin мин</div>
+      </div>
+      <div class="detail-col">
+        <div class="detail-label">Статус</div>
+        <div class="detail-value" style="font-weight:600">@visitStatusNames.GetValueOrDefault((int)Model.Status, Model.Status.ToString())</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Имущество</div>
+  <div style="padding:12px;background:#fff;border:1px solid #e5e5e5;border-radius:6px;margin-bottom:20px">
+    <div class="detail-row">
+      <div class="detail-col">
+        <div class="detail-label">Заглавие</div>
+        <div class="detail-value" style="font-weight:600">@Model.Property.Title</div>
+      </div>
+      <div class="detail-col">
+        <div class="detail-label">Адрес</div>
+        <div class="detail-value">@Model.Property.Address</div>
+      </div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-col">
+        <div class="detail-label">Тип</div>
+        <div class="detail-value">@Model.Property.Type</div>
+      </div>
+      <div class="detail-col">
+        <div class="detail-label">Цена</div>
+        <div class="detail-value">@Model.Property.Price.ToString("F2") @Model.Property.Currency</div>
+      </div>
+      <div class="detail-col">
+        <div class="detail-label">Статус</div>
+        <div class="detail-value">@Model.Property.Status</div>
+      </div>
+    </div>
+  </div>
+
+  @if (Model.Client != null)
+  {
+    <div class="section-title">Клиент</div>
+    <div style="padding:12px;background:#fff;border:1px solid #e5e5e5;border-radius:6px;margin-bottom:20px">
+      <div class="detail-row">
+        <div class="detail-col">
+          <div class="detail-label">Име</div>
+          <div class="detail-value">@Model.Client.FirstName @Model.Client.LastName</div>
+        </div>
+        <div class="detail-col">
+          <div class="detail-label">Имейл</div>
+          <div class="detail-value">@Model.Client.Email</div>
+        </div>
+        <div class="detail-col">
+          <div class="detail-label">Телефон</div>
+          <div class="detail-value">@Model.Client.Phone</div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="section-title">Плащания</div>
+  <div style="padding:12px;background:#fff;border:1px solid #e5e5e5;border-radius:6px;margin-bottom:20px">
+    <div id="paymentsTable">
+      @await Html.PartialAsync("_PaymentsTable", Model.Payments.Where(p => !p.IsDeleted).OrderByDescending(p => p.CreatedAtUtc).ToList())
+    </div>
+    <button type="button" onclick="openPaymentForm()" class="btn" style="margin-top:12px">+ Добави плащане</button>
+  </div>
+
+  @if (!string.IsNullOrWhiteSpace(Model.Notes))
+  {
+    <div class="section-title">Бележки</div>
+    <div style="padding:12px;background:#f9f9f9;border:1px solid #e5e5e5;border-radius:6px;margin-bottom:20px;white-space:pre-wrap">@Model.Notes</div>
+  }
+
+  @if (!string.IsNullOrWhiteSpace(Model.Outcome))
+  {
+    <div class="section-title">✓ Резултат</div>
+    <div style="padding:12px;background:#f9f9f9;border:1px solid #e5e5e5;border-radius:6px;margin-bottom:20px;white-space:pre-wrap">@Model.Outcome</div>
+  }
+</div>
+
+<!-- Payment Form Modal -->
+<div id="paymentModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:1000">
+  <div style="background:#fff;border:1px solid #e5e5e5;padding:24px;border-radius:6px;width:min(500px, 90vw);max-height:90vh;overflow-y:auto">
+    <div id="paymentFormContent"></div>
+  </div>
+</div>
+
+@section Scripts {
+<script>
+const paymentModal = document.getElementById('paymentModal');
+const visitId = '@Model.Id';
+const token = document.getElementById('__aft')?.value || '';
+
+async function openPaymentForm(){
+  const html = await fetch('/Visits/PaymentForm').then(r => r.text());
+  document.getElementById('paymentFormContent').innerHTML = html;
+  paymentModal.style.display = 'flex';
+  document.getElementById('paymentForm')?.addEventListener('submit', submitPaymentForm);
+}
+
+function closePaymentForm(){
+  paymentModal.style.display = 'none';
+  document.getElementById('paymentFormContent').innerHTML = '';
+}
+
+async function submitPaymentForm(e){
+  e.preventDefault();
+  const fd = new FormData(this);
+  fd.set('visitId', visitId);
+  const res = await fetch('/Visits/AddPayment', { method:'POST', body:fd, credentials:'same-origin', headers:{'RequestVerificationToken':token}});
+  if(res.ok){
+    const html = await res.text();
+    document.getElementById('paymentsTable').innerHTML = html;
+    closePaymentForm();
+    showNotification('Плащане добавено успешно', 'success');
+  } else {
+    const err = await res.text();
+    showNotification(err || 'Грешка при добавяне на плащане', 'error');
+  }
+}
+
+async function deletePayment(paymentId){
+  const ok = await showConfirm('Сигурни ли сте, че искате да изтриете това плащане?', 'Потвърждение');
+  if(!ok) return;
+  const res = await fetch(`/Visits/DeletePayment?paymentId=${paymentId}`, {method:'DELETE', credentials:'same-origin', headers:{'RequestVerificationToken':token}});
+  if(res.ok){
+    const html = await res.text();
+    document.getElementById('paymentsTable').innerHTML = html;
+    showNotification('Плащане изтрито успешно', 'success');
+  } else {
+    showNotification('Грешка при изтриване на плащане', 'error');
+  }
+}
+
+// Close modal on outside click
+paymentModal?.addEventListener('click', function(e){
+  if(e.target === this) closePaymentForm();
+});
+</script>
+}

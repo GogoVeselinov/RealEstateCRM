@@ -47,6 +47,7 @@ tr:hover{background:#f5f5f5}
 @section Scripts {
 <script>
 const modal = document.getElementById('modal');
+const listContainer = document.getElementById('listContainer');
 
 function showModal(html){ modal.innerHTML = `<div class="card">${html}</div>`; modal.style.display='flex'; }
 function closeModal(){ modal.style.display='none'; modal.innerHTML=''; }
@@ -79,17 +80,114 @@ async function submitForm(form){
     if(res.ok){
         closeModal(); await reloadList();
     } else {
-        // върни формата с грешките
         const html = await res.text();
         showModal(html);
     }
 }
 
-async function del(id){
-    const token = document.getElementById('__aft').value; // от _Layout
-    if(!confirm('Сигурни ли сте, че искате да изтриете имота?')) return;
-    const res = await fetch('/Properties/Delete?id='+id, { method:'DELETE', headers: { 'RequestVerificationToken': token }});
-    if(res.ok) await reloadList();
+function getToken(){ const el = document.getElementById('__aft'); return el ? el.value : '' }
+
+async function showErrorResponse(res, action = 'Operation'){
+    let text = '';
+    try{ text = await res.text(); }catch(e){ text = ''; }
+    const msg = text ? `${action} failed (${res.status}): ${text}` : `${action} failed (${res.status})`;
+    showNotification(msg, 'error', action);
 }
+
+async function doDelete(id){
+    const token = getToken();
+    const ok = await showConfirm('Сигурни ли сте, че искате да изтриете имота?', 'Потвърждение');
+    if(!ok) return;
+    const res = await fetch('/Properties/Delete?id='+id, { method:'DELETE', headers: { 'RequestVerificationToken': token }, credentials: 'same-origin' });
+    if(res.ok) await reloadList(); else await showErrorResponse(res, 'Delete');
+}
+
+// Inline edit handlers via event delegation
+listContainer.addEventListener('click', async function(e){
+    const target = e.target;
+    if(target.classList.contains('btn-enter-edit')){
+        const tr = target.closest('tr');
+        tr.querySelectorAll('.cell.view').forEach(el=>el.style.display='none');
+        tr.querySelectorAll('.cell.edit').forEach(el=>el.style.display='inline-block');
+        target.style.display='none';
+        const saveBtn = tr.querySelector('.btn-save-row');
+        const cancelBtn = tr.querySelector('.btn-cancel-edit');
+        if(saveBtn) saveBtn.style.display='inline-block';
+        if(cancelBtn) cancelBtn.style.display='inline-block';
+        return;
+    }
+    if(target.classList.contains('btn-cancel-edit')){
+        const tr = target.closest('tr');
+        tr.querySelectorAll('.cell.view').forEach(el=>el.style.display='inline');
+        tr.querySelectorAll('.cell.edit').forEach(el=>el.style.display='none');
+        tr.querySelectorAll('.title-input').forEach(i=> i.value = tr.querySelector('.view.title').textContent.trim());
+        tr.querySelectorAll('.address-input').forEach(i=> i.value = tr.querySelector('.view.address').textContent.trim());
+        tr.querySelectorAll('.price-input').forEach(i=> i.value = tr.querySelector('.view.price').textContent.trim());
+        const editBtn = tr.querySelector('.btn-enter-edit');
+        if(editBtn){ editBtn.style.display='inline-block'; const saveBtn = tr.querySelector('.btn-save-row'); const cancelBtn = tr.querySelector('.btn-cancel-edit'); if(saveBtn) saveBtn.style.display='none'; if(cancelBtn) cancelBtn.style.display='none'; }
+        return;
+    }
+    if(target.classList.contains('btn-save-row')){
+        const tr = target.closest('tr');
+        const id = tr.getAttribute('data-id');
+        const title = tr.querySelector('.title-input').value;
+        const address = tr.querySelector('.address-input').value;
+        const typeRaw = tr.querySelector('.type-select').value;
+        const statusRaw = tr.querySelector('.status-select').value;
+        const type = typeRaw ? parseInt(typeRaw, 10) : null;
+        const status = statusRaw ? parseInt(statusRaw, 10) : null;
+        const priceRaw = tr.querySelector('.price-input').value;
+        const price = priceRaw ? parseFloat(priceRaw) : null;
+        const currency = tr.querySelector('.currency-input').value;
+        const payload = { id: id, title: title, address: address, type: type, status: status, price: price, currency: currency };
+        const confirmSave = await showConfirm('Сигурни ли сте, че искате да запазите промените?', 'Потвърждение');
+        if(!confirmSave) return;
+        const token = getToken();
+        const res = await fetch('/Properties/AjaxEdit', { method:'POST', headers: { 'Content-Type':'application/json', 'RequestVerificationToken': token }, body: JSON.stringify(payload), credentials: 'same-origin' });
+        if(res.ok){
+            const data = await res.json();
+            // update view spans with server-validated values
+            const viewTitle = tr.querySelector('.view.title'); if(viewTitle) viewTitle.textContent = data.title;
+            const viewAddress = tr.querySelector('.view.address'); if(viewAddress) viewAddress.textContent = data.address;
+            const viewType = tr.querySelector('.view.type'); if(viewType) viewType.textContent = data.type;
+            const viewStatus = tr.querySelector('.view.status'); if(viewStatus) viewStatus.textContent = data.status;
+            const viewPrice = tr.querySelector('.view.price'); if(viewPrice) viewPrice.textContent = data.price ?? '';
+            const viewCurrency = tr.querySelector('.view.currency'); if(viewCurrency) viewCurrency.textContent = data.currency;
+
+            // switch back to view mode
+            tr.querySelectorAll('.cell.edit').forEach(el=>el.style.display='none');
+            tr.querySelectorAll('.cell.view').forEach(el=>el.style.display='inline');
+
+            // buttons: hide save/cancel, show edit
+            const saveBtn = tr.querySelector('.btn-save-row');
+            const cancelBtn = tr.querySelector('.btn-cancel-edit');
+            const editBtn = tr.querySelector('.btn-enter-edit');
+            if(saveBtn) { saveBtn.style.display='none'; saveBtn.textContent = 'Save'; }
+            if(cancelBtn) cancelBtn.style.display='none';
+            if(editBtn) editBtn.style.display='inline-block';
+        } else {
+            await showErrorResponse(res, 'Save');
+        }
+        return;
+    }
+    if(target.classList.contains('btn-delete')){
+        const id = target.getAttribute('data-id');
+        await doDelete(id);
+        return;
+    }
+});
+
+// Support Enter key inside inputs to save
+listContainer.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){
+        const input = e.target;
+        if(input.classList.contains('title-input') || input.classList.contains('address-input') || input.classList.contains('price-input')){
+            const tr = input.closest('tr');
+            const saveBtn = tr.querySelector('.btn-save-row');
+            if(saveBtn) saveBtn.click();
+            e.preventDefault();
+        }
+    }
+});
 </script>
 }

@@ -1,0 +1,27 @@
+@{
+    var settings = (RealEstateCRM.Models.Entities.PayrollSettings)(ViewBag.PayrollSettings);
+}
+
+<form id="payrollSettingsForm" method="post">
+    <h3 style="margin-top:0">⚙ Настройки на заплатоносност</h3>
+    
+    <div style="margin-bottom:12px">
+        <label style="display:block;margin-bottom:4px;font-weight:700">Базова заплата</label>
+        <input type="number" name="BaseSalary" step="0.01" value="@settings?.BaseSalary" style="width:100%;padding:8px;border:1px solid #e5e5e5" required />
+    </div>
+
+    <div style="margin-bottom:12px">
+        <label style="display:block;margin-bottom:4px;font-weight:700">Процент комисион (%)</label>
+        <input type="number" name="CommissionPercentage" step="0.01" value="@settings?.CommissionPercentage" style="width:100%;padding:8px;border:1px solid #e5e5e5" required />
+    </div>
+
+    <div style="margin-bottom:12px">
+        <label style="display:block;margin-bottom:4px;font-weight:700">Бонус за посещение</label>
+        <input type="number" name="VisitBonus" step="0.01" value="@settings?.VisitBonus" style="width:100%;padding:8px;border:1px solid #e5e5e5" required />
+    </div>
+
+    <div style="display:flex;gap:8px">
+        <button type="submit" class="btn">Запази</button>
+        <button type="button" onclick="closePayrollSettingsForm()" class="btn secondary">Отмени</button>
+    </div>
+</form>

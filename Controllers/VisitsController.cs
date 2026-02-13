@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RealEstateCRM.Data;
 using RealEstateCRM.Models.Common;
+using RealEstateCRM.Models.Entities;
 using RealEstateCRM.Models.Identity;
 using RealEstateCRM.Models.ViewModels;
 
@@ -221,6 +222,112 @@ public class VisitsController : Controller
             v.Outcome = "Проведен оглед.";
         await _db.SaveChangesAsync();
         return Ok(new { ok = true });
+    }
+
+    // Details page for visit with payments
+    [HttpGet]
+    public async Task<IActionResult> Details(Guid id)
+    {
+        var v = await _db.Visits
+            .Include(x => x.Property)
+            .Include(x => x.Client)
+            .Include(x => x.Payments)
+            .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+        
+        if (v == null) return NotFound();
+
+        if (User.IsInRole(AppRoles.Manager))
+        {
+            var me = (await _um.GetUserAsync(User))!.Id;
+            if (v.OwnerUserId != me) return Forbid();
+        }
+
+        return View(v);
+    }
+
+    // Payment form partial
+    [HttpGet]
+    public async Task<IActionResult> PaymentForm(Guid visitId = default)
+    {
+        var visit = await _db.Visits.FirstOrDefaultAsync(x => x.Id == visitId);
+        return PartialView("_PaymentForm", visit ?? new Visit { Id = visitId });
+    }
+
+    // Payment endpoints
+    [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Manager}")]
+    [HttpPost]
+    public async Task<IActionResult> AddPayment([FromForm] Guid visitId, [FromForm] decimal amount, [FromForm] PaymentType type, [FromForm] PaymentMethod method, [FromForm] string? notes, [FromForm] IFormFile? file)
+    {
+        var visit = await _db.Visits.FirstOrDefaultAsync(x => x.Id == visitId && !x.IsDeleted);
+        if (visit == null) return BadRequest("Visit not found");
+
+        if (User.IsInRole(AppRoles.Manager))
+        {
+            var me = (await _um.GetUserAsync(User))!.Id;
+            if (visit.OwnerUserId != me) return Forbid();
+        }
+
+        string? filePath = null;
+        if (file != null && file.Length > 0)
+        {
+            var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "payments");
+            if (!Directory.Exists(uploadsDir))
+                Directory.CreateDirectory(uploadsDir);
+
+            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+            var fullPath = Path.Combine(uploadsDir, fileName);
+            
+            using (var stream = new FileStream(fullPath, FileMode.Create))
+                await file.CopyToAsync(stream);
+
+            filePath = $"/uploads/payments/{fileName}";
+        }
+
+        var me2 = (await _um.GetUserAsync(User))!.Id;
+        var payment = new VisitPayment
+        {
+            VisitId = visitId,
+            Amount = amount,
+            PaymentType = type,
+            PaymentMethod = method,
+            Notes = notes,
+            FilePath = filePath,
+            OwnerUserId = me2
+        };
+
+        _db.VisitPayments.Add(payment);
+        await _db.SaveChangesAsync();
+
+        var payments = await _db.VisitPayments
+            .Where(p => p.VisitId == visitId && !p.IsDeleted)
+            .OrderByDescending(p => p.CreatedAtUtc)
+            .ToListAsync();
+
+        return PartialView("_PaymentsTable", payments);
+    }
+
+    [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Manager}")]
+    [HttpDelete]
+    public async Task<IActionResult> DeletePayment(Guid paymentId)
+    {
+        var payment = await _db.VisitPayments.FirstOrDefaultAsync(x => x.Id == paymentId);
+        if (payment == null) return NotFound();
+
+        if (User.IsInRole(AppRoles.Manager))
+        {
+            var me = (await _um.GetUserAsync(User))!.Id;
+            if (payment.OwnerUserId != me) return Forbid();
+        }
+
+        payment.IsDeleted = true;
+        await _db.SaveChangesAsync();
+
+        var payments = await _db.VisitPayments
+            .Where(p => p.VisitId == payment.VisitId && !p.IsDeleted)
+            .OrderByDescending(p => p.CreatedAtUtc)
+            .ToListAsync();
+
+        return PartialView("_PaymentsTable", payments);
     }
 
     // ICS export (календър)

@@ -1,0 +1,35 @@
+<div id="confirm-modal" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,.4);z-index:10001">
+  <div style="background:#fff;padding:16px;border-radius:6px;min-width:300px;max-width:90vw;border:1px solid #e5e5e5">
+    <div id="confirm-title" style="font-weight:700;margin-bottom:8px"></div>
+    <div id="confirm-body" style="margin-bottom:12px"></div>
+    <div style="text-align:right">
+      <button id="confirm-cancel" class="btn secondary" style="margin-right:8px">Cancel</button>
+      <button id="confirm-ok" class="btn">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const modal = document.getElementById('confirm-modal');
+  const titleEl = document.getElementById('confirm-title');
+  const bodyEl = document.getElementById('confirm-body');
+  const okBtn = document.getElementById('confirm-ok');
+  const cancelBtn = document.getElementById('confirm-cancel');
+  let resolver = null;
+
+  function hide(){ modal.style.display = 'none'; titleEl.textContent=''; bodyEl.textContent=''; resolver = null; }
+
+  okBtn.addEventListener('click', ()=>{ if(resolver) resolver(true); hide(); });
+  cancelBtn.addEventListener('click', ()=>{ if(resolver) resolver(false); hide(); });
+
+  window.showConfirm = function(message, title=''){
+    return new Promise(resolve => {
+      resolver = resolve;
+      titleEl.textContent = title;
+      bodyEl.textContent = message;
+      modal.style.display = 'flex';
+    });
+  };
+})();
+</script>

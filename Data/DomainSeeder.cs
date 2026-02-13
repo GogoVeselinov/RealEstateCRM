@@ -90,5 +90,72 @@ public static class DomainSeeder
 
         db.Visits.AddRange(visit1, visit2);
         await db.SaveChangesAsync();
+
+        // Create default app settings
+        if (!db.AppSettings.Any())
+        {
+            var settings = new List<AppSetting>
+            {
+                new AppSetting
+                {
+                    Key = "Company.Name",
+                    Value = "RealEstate CRM",
+                    Description = "Име на компанията",
+                    Category = "General"
+                },
+                new AppSetting
+                {
+                    Key = "Company.Email",
+                    Value = "info@realestate.com",
+                    Description = "Основен имейл адрес",
+                    Category = "General"
+                },
+                new AppSetting
+                {
+                    Key = "Company.Phone",
+                    Value = "+359 2 123 4567",
+                    Description = "Телефон за контакт",
+                    Category = "General"
+                },
+                new AppSetting
+                {
+                    Key = "System.DefaultCurrency",
+                    Value = "USD",
+                    Description = "Валута по подразбиране",
+                    Category = "System"
+                },
+                new AppSetting
+                {
+                    Key = "System.ItemsPerPage",
+                    Value = "20",
+                    Description = "Брой записи на страница",
+                    Category = "System"
+                },
+                new AppSetting
+                {
+                    Key = "Email.SmtpServer",
+                    Value = "smtp.gmail.com",
+                    Description = "SMTP сървър",
+                    Category = "Email"
+                },
+                new AppSetting
+                {
+                    Key = "Email.SmtpPort",
+                    Value = "587",
+                    Description = "SMTP порт",
+                    Category = "Email"
+                },
+                new AppSetting
+                {
+                    Key = "Notifications.EnableEmail",
+                    Value = "false",
+                    Description = "Включване на имейл известия",
+                    Category = "Notifications"
+                }
+            };
+
+            db.AppSettings.AddRange(settings);
+            await db.SaveChangesAsync();
+        }
     }
 }

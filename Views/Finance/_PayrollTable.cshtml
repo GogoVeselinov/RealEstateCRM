@@ -1,0 +1,37 @@
+@{
+    var payrollData = (List<dynamic>)(ViewBag.PayrollData ?? new List<dynamic>());
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>Управител</th>
+            <th>Базова заплата</th>
+            <th>% Комисион</th>
+            <th>Сума комисион</th>
+            <th>Бонус за посещение</th>
+            <th>Завършени посещения</th>
+            <th>Сума бонусов</th>
+            <th>Финална заплата</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(payrollData.Count == 0)
+        {
+            <tr><td colspan="8" style="text-align:center;padding:20px">Няма данни</td></tr>
+        }
+        @foreach(var item in payrollData)
+        {
+            <tr>
+                <td>@item.ManagerName</td>
+                <td>@item.BaseSalary.ToString("F2")</td>
+                <td>@item.CommissionPercentage.ToString("F2")%</td>
+                <td>@item.CommissionAmount.ToString("F2")</td>
+                <td>@item.VisitBonus.ToString("F2")</td>
+                <td>@item.CompletedVisits</td>
+                <td>@item.VisitBonusAmount.ToString("F2")</td>
+                <td style="font-weight:700">@item.FinalSalary.ToString("F2")</td>
+            </tr>
+        }
+    </tbody>
+</table>

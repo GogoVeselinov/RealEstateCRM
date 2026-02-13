@@ -24,7 +24,12 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var user = await _userManager.GetUserAsync(User);
-        var userId = user!.Id;
+        if (user == null)
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+        
+        var userId = user.Id;
         var isAdmin = await _userManager.IsInRoleAsync(user, AppRoles.Admin);
 
         // Guard за филтриране по собственик (админ вижда всичко)

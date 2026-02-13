@@ -17,6 +17,12 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Client> Clients => Set<Client>();
     public DbSet<Property> Properties => Set<Property>();
     public DbSet<Visit> Visits => Set<Visit>();
+    public DbSet<VisitPayment> VisitPayments => Set<VisitPayment>();
+    public DbSet<Expense> Expenses => Set<Expense>();
+    public DbSet<PayrollSettings> PayrollSettings => Set<PayrollSettings>();
+    public DbSet<ManagerPayrollOverride> ManagerPayrollOverrides => Set<ManagerPayrollOverride>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<AppSetting> AppSettings => Set<AppSetting>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -60,6 +66,61 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
             e.HasOne(x => x.Client).WithMany(c => c.Visits).HasForeignKey(x => x.ClientId).OnDelete(DeleteBehavior.SetNull);
             e.HasOne(x => x.OwnerUser).WithMany().HasForeignKey(x => x.OwnerUserId).OnDelete(DeleteBehavior.Restrict);
             e.HasIndex(x => x.VisitAtLocal);
+        });
+
+        b.Entity<VisitPayment>(e =>
+        {
+            e.Property(x => x.Amount).HasPrecision(18, 2).IsRequired();
+            e.Property(x => x.Notes).HasMaxLength(500);
+            e.Property(x => x.FilePath).HasMaxLength(300);
+            e.HasOne(x => x.Visit).WithMany(v => v.Payments).HasForeignKey(x => x.VisitId).OnDelete(DeleteBehavior.Cascade);
+            e.HasIndex(x => x.VisitId);
+            e.HasIndex(x => x.CreatedAtUtc);
+        });
+
+        b.Entity<AuditLog>(e =>
+        {
+            e.Property(x => x.UserEmail).HasMaxLength(200).IsRequired();
+            e.Property(x => x.Action).HasMaxLength(50).IsRequired();
+            e.Property(x => x.EntityType).HasMaxLength(50).IsRequired();
+            e.Property(x => x.EntityId).HasMaxLength(50).IsRequired();
+            e.HasIndex(x => x.Timestamp);
+            e.HasIndex(x => new { x.EntityType, x.EntityId });
+            e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        b.Entity<AppSetting>(e =>
+        {
+            e.Property(x => x.Key).HasMaxLength(100).IsRequired();
+            e.Property(x => x.Value).HasMaxLength(500).IsRequired();
+            e.Property(x => x.Category).HasMaxLength(50).IsRequired();
+            e.HasIndex(x => x.Key).IsUnique();
+            e.HasIndex(x => x.Category);
+        });
+
+        b.Entity<Expense>(e =>
+        {
+            e.Property(x => x.Amount).HasPrecision(18, 2).IsRequired();
+            e.Property(x => x.Description).HasMaxLength(500).IsRequired();
+            e.HasIndex(x => x.CreatedAtUtc);
+            e.HasIndex(x => x.Category);
+        });
+
+        b.Entity<PayrollSettings>(e =>
+        {
+            e.Property(x => x.BaseSalary).HasPrecision(18, 2).IsRequired();
+            e.Property(x => x.CommissionPercentage).HasPrecision(5, 2).IsRequired();
+            e.Property(x => x.VisitBonus).HasPrecision(18, 2).IsRequired();
+        });
+
+        b.Entity<ManagerPayrollOverride>(e =>
+        {
+            e.Property(x => x.UserId).HasMaxLength(450).IsRequired();
+            e.Property(x => x.BaseSalary).HasPrecision(18, 2).IsRequired();
+            e.Property(x => x.CommissionPercentage).HasPrecision(5, 2).IsRequired();
+            e.Property(x => x.VisitBonus).HasPrecision(18, 2).IsRequired();
+            e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+            e.HasIndex(x => x.UserId).IsUnique();
         });
     }
 

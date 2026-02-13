@@ -54,6 +54,7 @@
                         }
                     </td>
                     <td class="right">
+                        <a href="/Visits/Details/@visit.Id" class="btn secondary" style="font-size: 0.8em; padding: 4px 8px; text-decoration: none; display: inline-block;">Детайли</a>
                         @if ((bool)(ViewBag.CanEdit ?? false))
                         {
                             @if (visit.Status == VisitStatus.Scheduled)

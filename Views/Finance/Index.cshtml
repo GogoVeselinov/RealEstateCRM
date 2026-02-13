@@ -1,0 +1,169 @@
+@{
+    ViewData["Title"] = "Finance";
+    var totalIncome = (decimal)ViewBag.TotalIncome;
+    var totalExpenses = (decimal)ViewBag.TotalExpenses;
+    var netProfit = (decimal)ViewBag.NetProfit;
+    var isAdmin = (bool)ViewBag.IsAdmin;
+    var from = (DateTime?)ViewBag.From;
+    var to = (DateTime?)ViewBag.To;
+}
+
+<style>
+  .summary { display: flex; gap: 16px; margin-bottom: 24px; }
+  .summary-card { flex: 1; padding: 16px; background: #f5f5f5; border: 1px solid #e5e5e5; border-radius: 6px; }
+  .summary-label { font-size: 12px; color: #666; margin-bottom: 4px; }
+  .summary-value { font-size: 20px; font-weight: 700; }
+  .section-title { font-weight: 700; font-size: 16px; margin-top: 24px; margin-bottom: 12px; border-bottom: 2px solid #000; padding-bottom: 8px; }
+  .table-section { padding: 12px; background: #fff; border: 1px solid #e5e5e5; border-radius: 6px; margin-bottom: 20px; overflow-x: auto; }
+  .filter-row { display: flex; gap: 12px; align-items: flex-end; margin-bottom: 20px; }
+  .filter-row input { padding: 8px; border: 1px solid #e5e5e5; }
+  .filter-row button { padding: 8px 12px; border: 1px solid #000; background: #000; color: #fff; cursor: pointer; }
+</style>
+
+<div style="max-width:1200px;margin:0 auto;padding:16px">
+  <!-- Period Filter -->
+  <div class="filter-row">
+    <input type="date" id="fromDate" value="@from?.ToString("yyyy-MM-dd")" style="flex:1" />
+    <input type="date" id="toDate" value="@to?.ToString("yyyy-MM-dd")" style="flex:1" />
+    <button type="button" onclick="applyFilter()" class="btn">Филтрирай</button>
+    @if (isAdmin)
+    {
+      <button type="button" onclick="openExpenseForm()" class="btn" style="background:#000">+ Разход</button>
+      <button type="button" onclick="openPayrollSettings()" class="btn" style="background:#000">⚙ Настройки</button>
+    }
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary">
+    <div class="summary-card">
+      <div class="summary-label">Общ Приход</div>
+      <div class="summary-value" style="color:#2e7d32">@totalIncome.ToString("F2")</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Общ Разход</div>
+      <div class="summary-value" style="color:#d32f2f">@totalExpenses.ToString("F2")</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Нетна Печалба</div>
+      <div class="summary-value" style="color:@(netProfit >= 0 ? "#2e7d32" : "#d32f2f")">@netProfit.ToString("F2")</div>
+    </div>
+  </div>
+
+  <!-- Income Section -->
+  <div class="section-title">💰 Приходи</div>
+  <div class="table-section">
+    @await Html.PartialAsync("_IncomeTable")
+  </div>
+
+  <!-- Expenses Section -->
+  <div class="section-title">💳 Разходи</div>
+  <div class="table-section">
+    @await Html.PartialAsync("_ExpensesTable")
+  </div>
+
+  <!-- Payroll Section -->
+  <div class="section-title">💵 Заплатоносност</div>
+  <div class="table-section">
+    @await Html.PartialAsync("_PayrollTable")
+  </div>
+</div>
+
+<!-- Expense Form Modal -->
+<div id="expenseModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:1000">
+  <div style="background:#fff;border:1px solid #e5e5e5;padding:24px;border-radius:6px;width:min(500px,90vw)">
+    <div id="expenseFormContent"></div>
+  </div>
+</div>
+
+<!-- Payroll Settings Modal -->
+<div id="payrollSettingsModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:1000">
+  <div style="background:#fff;border:1px solid #e5e5e5;padding:24px;border-radius:6px;width:min(500px,90vw)">
+    <div id="payrollSettingsFormContent"></div>
+  </div>
+</div>
+
+@section Scripts {
+<script>
+const token = document.getElementById('__aft')?.value || '';
+
+async function openExpenseForm(){
+  const html = await fetch('/Finance/AddExpense').then(r => r.text());
+  document.getElementById('expenseFormContent').innerHTML = html;
+  document.getElementById('expenseModal').style.display = 'flex';
+  document.getElementById('expenseForm')?.addEventListener('submit', submitExpenseForm);
+}
+
+function closeExpenseForm(){
+  document.getElementById('expenseModal').style.display = 'none';
+}
+
+async function submitExpenseForm(e){
+  e.preventDefault();
+  const fd = new FormData(this);
+  const res = await fetch('/Finance/AddExpense', {method:'POST', body:fd, credentials:'same-origin', headers:{'RequestVerificationToken':token}});
+  if(res.ok){
+    closeExpenseForm();
+    showNotification('Разход добавен успешно', 'success');
+    setTimeout(() => location.reload(), 1000);
+  } else {
+    const err = await res.text();
+    showNotification(err || 'Грешка при добавяне на разход', 'error');
+  }
+}
+
+async function deleteExpense(expenseId){
+  const ok = await showConfirm('Сигурни ли сте, че искате да изтриете този разход?', 'Потвърждение');
+  if(!ok) return;
+  const res = await fetch(`/Finance/DeleteExpense?id=${expenseId}`, {method:'DELETE', credentials:'same-origin', headers:{'RequestVerificationToken':token}});
+  if(res.ok){
+    showNotification('Разход изтрит успешно', 'success');
+    setTimeout(() => location.reload(), 1000);
+  } else {
+    showNotification('Грешка при изтриване на разход', 'error');
+  }
+}
+
+async function openPayrollSettings(){
+  const html = await fetch('/Finance/EditPayrollSettings').then(r => r.text());
+  document.getElementById('payrollSettingsFormContent').innerHTML = html;
+  document.getElementById('payrollSettingsModal').style.display = 'flex';
+  document.getElementById('payrollSettingsForm')?.addEventListener('submit', submitPayrollSettingsForm);
+}
+
+function closePayrollSettingsForm(){
+  document.getElementById('payrollSettingsModal').style.display = 'none';
+}
+
+async function submitPayrollSettingsForm(e){
+  e.preventDefault();
+  const fd = new FormData(this);
+  const res = await fetch('/Finance/SavePayrollSettings', {method:'POST', body:fd, credentials:'same-origin', headers:{'RequestVerificationToken':token}});
+  if(res.ok){
+    closePayrollSettingsForm();
+    showNotification('Настройките на заплатоносност бяха запазени', 'success');
+    setTimeout(() => location.reload(), 1000);
+  } else {
+    showNotification('Грешка при запазване на настройките', 'error');
+  }
+}
+
+function applyFilter(){
+  const from = document.getElementById('fromDate').value;
+  const to = document.getElementById('toDate').value;
+  if(!from || !to){
+    showNotification('Моля, изберете от и до дата', 'error');
+    return;
+  }
+  const url = `/Finance/Index?from=${from}&to=${to}`;
+  location.href = url;
+}
+
+// Close modals on outside click
+document.getElementById('expenseModal')?.addEventListener('click', function(e){
+  if(e.target === this) closeExpenseForm();
+});
+document.getElementById('payrollSettingsModal')?.addEventListener('click', function(e){
+  if(e.target === this) closePayrollSettingsForm();
+});
+</script>
+}

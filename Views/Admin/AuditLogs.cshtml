@@ -1,0 +1,95 @@
+@model List<RealEstateCRM.Models.ViewModels.AuditLogViewModel>
+
+@{
+    ViewData["Title"] = "Audit Log";
+    var currentPage = (int)ViewBag.CurrentPage;
+    var totalPages = (int)ViewBag.TotalPages;
+    var action = ViewBag.Action as string;
+    var entityType = ViewBag.EntityType as string;
+}
+
+<div class="wrap">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>Audit Log</h2>
+        <a href="@Url.Action("Index")" class="btn">← Назад към потребители</a>
+    </div>
+
+    <div style="padding: 16px; margin-bottom: 16px; border: 1px solid #000;">
+        <form method="get" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+            <div>
+                <label for="action" style="display: block; margin-bottom: 4px;">Действие</label>
+                <select name="action" id="action" style="width: 100%; padding: 8px; border: 1px solid #000;">
+                    <option value="">Всички</option>
+                    <option value="Create" selected="@(action == "Create")">Create</option>
+                    <option value="Update" selected="@(action == "Update")">Update</option>
+                    <option value="Delete" selected="@(action == "Delete")">Delete</option>
+                    <option value="Login" selected="@(action == "Login")">Login</option>
+                    <option value="Lock" selected="@(action == "Lock")">Lock</option>
+                    <option value="Unlock" selected="@(action == "Unlock")">Unlock</option>
+                </select>
+            </div>
+            <div>
+                <label for="entityType" style="display: block; margin-bottom: 4px;">Тип на обект</label>
+                <select name="entityType" id="entityType" style="width: 100%; padding: 8px; border: 1px solid #000;">
+                    <option value="">Всички</option>
+                    <option value="User" selected="@(entityType == "User")">User</option>
+                    <option value="Client" selected="@(entityType == "Client")">Client</option>
+                    <option value="Property" selected="@(entityType == "Property")">Property</option>
+                    <option value="Visit" selected="@(entityType == "Visit")">Visit</option>
+                    <option value="AppSetting" selected="@(entityType == "AppSetting")">AppSetting</option>
+                </select>
+            </div>
+            <div style="display: flex; align-items: end;">
+                <button type="submit" class="btn" style="margin-right: 8px;">Филтрирай</button>
+                <a href="@Url.Action("AuditLogs")" class="btn secondary">Изчисти</a>
+            </div>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Време</th>
+                <th>Потребител</th>
+                <th>Действие</th>
+                <th>Тип</th>
+                <th>Детайли</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var log in Model)
+            {
+                <tr>
+                    <td><small>@log.Timestamp.ToString("dd.MM.yyyy HH:mm:ss")</small></td>
+                    <td><small>@log.UserEmail</small></td>
+                    <td><span class="badge">@log.Action</span></td>
+                    <td><small>@log.EntityType</small></td>
+                    <td><small>@log.Details</small></td>
+                </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: #999;">
+                        Няма записи
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (totalPages > 1)
+    {
+        <div style="margin-top: 20px; text-align: center;">
+            @if (currentPage > 1)
+            {
+                <a href="@Url.Action("AuditLogs", new { page = currentPage - 1, action, entityType })" class="btn secondary" style="margin-right: 4px;">← Предишна</a>
+            }
+            <span style="padding: 0 16px;">Страница @currentPage от @totalPages</span>
+            @if (currentPage < totalPages)
+            {
+                <a href="@Url.Action("AuditLogs", new { page = currentPage + 1, action, entityType })" class="btn secondary" style="margin-left: 4px;">Следваща →</a>
+            }
+        </div>
+    }
+</div>

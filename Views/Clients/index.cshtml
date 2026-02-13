@@ -126,8 +126,9 @@
         }
         async function del(id) {
             const token = document.getElementById('__aft').value;
-            if (!confirm('Сигурни ли сте, че искате да изтриете клиента?')) return;
-            const res = await fetch('/Clients/Delete?id=' + id, { method: 'DELETE', headers: { 'RequestVerificationToken': token } });
+            const ok = await showConfirm('Сигурни ли сте, че искате да изтриете клиента?', 'Потвърждение');
+            if (!ok) return;
+            const res = await fetch('/Clients/Delete?id=' + id, { method: 'DELETE', headers: { 'RequestVerificationToken': token }, credentials: 'same-origin' });
             if (res.ok) reloadList();
         }
     </script>

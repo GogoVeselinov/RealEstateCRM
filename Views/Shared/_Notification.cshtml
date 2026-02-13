@@ -1,0 +1,39 @@
+<div id="notification" style="display:none;position:fixed;bottom:20px;right:20px;z-index:10000">
+    <div id="notification-card" style="min-width:260px;background:#fff;border:1px solid #e5e5e5;padding:12px 14px;border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,.12);">
+        <div id="notification-title" style="font-weight:700;margin-bottom:6px"></div>
+        <div id="notification-body"></div>
+    </div>
+</div>
+
+<script>
+(function(){
+    const el = document.getElementById('notification');
+    const card = document.getElementById('notification-card');
+    const titleEl = document.getElementById('notification-title');
+    const bodyEl = document.getElementById('notification-body');
+    let hideTimeout = null;
+
+    function applyStyle(type){
+        if(type === 'error'){
+            card.style.borderColor = '#f44336';
+        } else if(type === 'success'){
+            card.style.borderColor = '#2e7d32';
+        } else {
+            card.style.borderColor = '#e5e5e5';
+        }
+    }
+
+    window.showNotification = function(message, type = 'info', title = ''){
+        if(!el) return;
+        titleEl.textContent = title;
+        bodyEl.textContent = message;
+        applyStyle(type);
+        el.style.display = 'block';
+        // reset auto-hide
+        if(hideTimeout) clearTimeout(hideTimeout);
+        hideTimeout = setTimeout(()=>{ el.style.display = 'none'; }, 4000);
+    };
+
+    window.hideNotification = function(){ if(el) el.style.display = 'none'; };
+})();
+</script>

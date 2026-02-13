@@ -1,4 +1,7 @@
 @model List<RealEstateCRM.Models.ViewModels.PropertyListItemViewModel>
+@{
+    var canEdit = (bool)(ViewBag.CanEdit ?? false);
+}
 
 <table class="table">
     <thead>
@@ -22,17 +25,46 @@
         {
             foreach (var p in Model)
             {
-                <tr>
-                    <td>@p.Title</td>
-                    <td>@p.Address</td>
-                    <td>@p.Type</td>
-                    <td>@p.Status</td>
-                    <td style="text-align:right;">@p.Price @p.Currency</td>
+                <tr data-id="@p.Id">
+                    <td>
+                        <span class="cell view title">@p.Title</span>
+                        <input class="cell edit title-input" style="display:none;width:100%" value="@p.Title" />
+                    </td>
+                    <td>
+                        <span class="cell view address">@p.Address</span>
+                        <input class="cell edit address-input" style="display:none;width:100%" value="@p.Address" />
+                    </td>
+                    <td>
+                        <span class="cell view type">@p.Type</span>
+                        <select class="cell edit type-select" style="display:none">
+                            @foreach(var val in Enum.GetValues(typeof(RealEstateCRM.Models.Common.PropertyType)).Cast<RealEstateCRM.Models.Common.PropertyType>())
+                            {
+                                <option value="@((int)val)" selected="@(val == p.Type ? "selected" : null)">@val</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <span class="cell view status">@p.Status</span>
+                        <select class="cell edit status-select" style="display:none">
+                            @foreach(var val in Enum.GetValues(typeof(RealEstateCRM.Models.Common.ListingStatus)).Cast<RealEstateCRM.Models.Common.ListingStatus>())
+                            {
+                                <option value="@((int)val)" selected="@(val == p.Status ? "selected" : null)">@val</option>
+                            }
+                        </select>
+                    </td>
+                    <td style="text-align:right;">
+                        <span class="cell view price">@p.Price</span>
+                        <input class="cell edit price-input" style="display:none;width:120px;text-align:right" value="@p.Price" />
+                        <span class="cell view currency">@p.Currency</span>
+                        <input class="cell edit currency-input" style="display:none;width:70px;margin-left:6px" value="@p.Currency" />
+                    </td>
                     <td style="text-align:right; white-space:nowrap;">
-                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        @if (canEdit)
                         {
-                            <button class="btn secondary" onclick="openEdit('@p.Id')">Edit</button>
-                            <button class="btn" onclick="del('@p.Id')">Delete</button>
+                            <button class="btn secondary btn-enter-edit">Редактирай</button>
+                            <button class="btn secondary btn-save-row" style="display:none">Запази</button>
+                            <button class="btn secondary btn-cancel-edit" style="display:none">Откажи</button>
+                            <button class="btn btn-delete" data-id="@p.Id">Изтрий</button>
                         }
                     </td>
                 </tr>

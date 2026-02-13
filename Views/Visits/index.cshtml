@@ -162,7 +162,8 @@
         }
         async function del(id) {
             const token = document.getElementById('__aft').value; // от _Layout
-            if (!confirm('Да изтрия ли този оглед?')) return;
+                const ok = await showConfirm('Да изтрия ли този оглед?', 'Потвърждение');
+                if (!ok) return;
             const res = await fetch('/Visits/Delete?id=' + id, { method: 'DELETE', headers: { 'RequestVerificationToken': token } });
             if (res.ok) reloadList();
         }

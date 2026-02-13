@@ -123,6 +123,7 @@
                 <a asp-controller="Visits" asp-action="Index" class="...">Visits</a>
                 @if (User.IsInRole(AppRoles.Admin))
                 {
+                    <a asp-controller="Finance" asp-action="Index" class="...">Finance</a>
                     <a asp-controller="Admin" asp-action="Index" class="...">Admin</a>
                 }
             </nav>
@@ -136,6 +137,11 @@
     <footer>
         <div class="wrap">&copy; @DateTime.Now.Year — RealEstate CRM</div>
     </footer>
+
+    <input type="hidden" id="__aft" value="@Af.GetAndStoreTokens(Context).RequestToken" />
+
+    @await Html.PartialAsync("_Notification")
+    @await Html.PartialAsync("_Confirm")
 
     @RenderSection("Scripts", required: false)
 </body>

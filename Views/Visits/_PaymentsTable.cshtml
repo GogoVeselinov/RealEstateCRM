@@ -1,0 +1,54 @@
+@model List<RealEstateCRM.Models.Entities.VisitPayment>
+
+@{
+    var typeNames = new Dictionary<int, string> { {0, "Такса Преглед"}, {1, "Комисион"}, {2, "Депозит"}, {3, "Други"} };
+    var methodNames = new Dictionary<int, string> { {0, "Пари"}, {1, "Банков Трансфер"}, {2, "POS"}, {3, "Други"} };
+}
+
+<table style="width:100%;border-collapse:collapse">
+  <thead>
+    <tr style="border-bottom:2px solid #000">
+      <th style="padding:8px;text-align:left">Дата</th>
+      <th style="padding:8px;text-align:left">Тип</th>
+      <th style="padding:8px;text-align:left">Метод</th>
+      <th style="padding:8px;text-align:right">Сума</th>
+      <th style="padding:8px;text-align:left">Бележки</th>
+      <th style="padding:8px;text-align:center">Документ</th>
+      <th style="padding:8px;text-align:center">Действие</th>
+    </tr>
+  </thead>
+  <tbody>
+    @if (!Model.Any())
+    {
+      <tr>
+        <td colspan="7" style="padding:20px;text-align:center;color:#999">Няма плащания</td>
+      </tr>
+    }
+    else
+    {
+      @foreach (var p in Model)
+      {
+        <tr style="border-bottom:1px solid #e5e5e5">
+          <td style="padding:8px">@p.CreatedAtUtc.ToString("dd.MM.yyyy HH:mm")</td>
+          <td style="padding:8px">@typeNames.GetValueOrDefault((int)p.PaymentType, p.PaymentType.ToString())</td>
+          <td style="padding:8px">@methodNames.GetValueOrDefault((int)p.PaymentMethod, p.PaymentMethod.ToString())</td>
+          <td style="padding:8px;text-align:right;font-weight:600">@p.Amount.ToString("F2")</td>
+          <td style="padding:8px">@(string.IsNullOrWhiteSpace(p.Notes) ? "-" : p.Notes)</td>
+          <td style="padding:8px;text-align:center">
+            @if (!string.IsNullOrWhiteSpace(p.FilePath))
+            {
+              <a href="@p.FilePath" target="_blank" style="color:#000;text-decoration:underline">📄</a>
+            }
+            else
+            {
+              <span style="color:#999">-</span>
+            }
+          </td>
+          <td style="padding:8px;text-align:center">
+            <button type="button" onclick="deletePayment('@p.Id')" class="btn secondary" style="padding:4px 8px;font-size:12px">Изтрий</button>
+          </td>
+        </tr>
+      }
+    }
+  </tbody>
+</table>

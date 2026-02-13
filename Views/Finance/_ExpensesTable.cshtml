@@ -1,0 +1,37 @@
+@{
+    var expenses = (List<RealEstateCRM.Models.Entities.Expense>)(ViewBag.Expenses ?? new List<RealEstateCRM.Models.Entities.Expense>());
+    var isAdmin = (bool)ViewBag.IsAdmin;
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Категория</th>
+            <th>Описание</th>
+            <th>Сума</th>
+            @if(isAdmin) { <th>Действие</th> }
+        </tr>
+    </thead>
+    <tbody>
+        @if(expenses.Count == 0)
+        {
+            <tr><td colspan="@(isAdmin ? 5 : 4)" style="text-align:center;padding:20px">Няма разходи</td></tr>
+        }
+        @foreach(var exp in expenses)
+        {
+            <tr>
+                <td>@exp.CreatedAtUtc.ToString("dd.MM.yyyy")</td>
+                <td>@exp.Category</td>
+                <td>@exp.Description</td>
+                <td>@exp.Amount.ToString("F2")</td>
+                @if(isAdmin)
+                {
+                    <td>
+                        <button onclick="deleteExpense(@exp.Id)" style="padding:4px 8px;border:1px solid #d32f2f;background:#fff;color:#d32f2f;cursor:pointer">Изтриване</button>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

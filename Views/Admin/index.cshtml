@@ -1,0 +1,220 @@
+@model List<RealEstateCRM.Models.ViewModels.UserListItemViewModel>
+
+@{
+    ViewData["Title"] = "Управление на потребители";
+}
+
+<div class="wrap">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>Управление на потребители</h2>
+        <div>
+            <a href="@Url.Action("AuditLogs")" class="btn" style="margin-right: 8px;">
+                Audit Log
+            </a>
+            <a href="@Url.Action("Settings")" class="btn" style="margin-right: 8px;">
+                Настройки
+            </a>
+            <button type="button" class="btn" onclick="openCreateUserModal()">
+                + Нов потребител
+            </button>
+        </div>
+    </div>
+
+    <div id="messageContainer"></div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div style="padding: 12px; margin-bottom: 16px; background: #f0f0f0; border: 1px solid #000;">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div style="padding: 12px; margin-bottom: 16px; background: #fee; border: 1px solid #c00; color: #c00;">
+            @TempData["Error"]
+        </div>
+    }
+
+    <table>
+        <thead>
+            <tr>
+                <th>Имейл</th>
+                <th>Име</th>
+                <th>Роли</th>
+                <th>Статус</th>
+                <th>Email потвърден</th>
+                <th style="text-align: right;">Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>@user.FullName</td>
+                    <td>
+                        @foreach (var role in user.Roles)
+                        {
+                            <span class="badge">@role</span>
+                        }
+                        @if (!user.Roles.Any())
+                        {
+                            <span style="color: #999;">Няма роля</span>
+                        }
+                    </td>
+                    <td>
+                        @if (user.IsLockedOut)
+                        {
+                            <span class="badge">🔒 Заключен</span>
+                        }
+                        else
+                        {
+                            <span class="badge">✓ Активен</span>
+                        }
+                    </td>
+                    <td>
+                        @if (user.EmailConfirmed)
+                        {
+                            <span>✓</span>
+                        }
+                        else
+                        {
+                            <span>✗</span>
+                        }
+                    </td>
+                    <td style="text-align: right;">
+                        <button type="button" class="btn secondary" style="margin-right: 4px;" onclick="openEditUserModal('@user.Id')">
+                            Редактирай
+                        </button>
+                        
+                        <form asp-action="ToggleLockout" method="post" style="display: inline;">
+                            <input type="hidden" name="id" value="@user.Id" />
+                            <button type="submit" class="btn secondary" style="margin-right: 4px;">
+                                @(user.IsLockedOut ? "🔓 Отключи" : "🔒 Заключи")
+                            </button>
+                        </form>
+                        
+                        <button type="button" class="btn secondary" onclick="confirmAndSubmit('delete-@user.Id', 'Сигурни ли сте, че искате да изтриете @user.Email?')">
+                            Изтрий
+                        </button>
+                        <form id="delete-@user.Id" asp-action="DeleteUser" method="post" style="display: none;">
+                            <input type="hidden" name="id" value="@user.Id" />
+                        </form>
+                    </td>
+                </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
+                        Няма потребители
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal -->
+<div id="userModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="position: relative; max-width: 600px; margin: 50px auto; background: #fff; border: 1px solid #000; padding: 24px;">
+        <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <h3 id="modalTitle">Потребител</h3>
+            <button type="button" onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+        </div>
+        <div id="modalContent">
+            <!-- Form will load here -->
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function openCreateUserModal() {
+            document.getElementById('modalTitle').textContent = 'Създаване на потребител';
+            document.getElementById('userModal').style.display = 'block';
+            
+            fetch('@Url.Action("GetCreateUserForm")')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('modalContent').innerHTML = html;
+                    initFormHandlers();
+                });
+        }
+
+        function openEditUserModal(userId) {
+            document.getElementById('modalTitle').textContent = 'Редактиране на потребител';
+            document.getElementById('userModal').style.display = 'block';
+            
+            fetch('@Url.Action("GetEditUserForm")?id=' + userId)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('modalContent').innerHTML = html;
+                    initFormHandlers();
+                });
+        }
+
+        function closeModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+
+        function initFormHandlers() {
+            const form = document.querySelector('#modalContent form');
+            if (!form) return;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(form);
+                const actionUrl = form.id === 'createUserForm' ? '@Url.Action("CreateUser")' : '@Url.Action("EditUser")';
+                
+                fetch(actionUrl, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'RequestVerificationToken': formData.get('__RequestVerificationToken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        closeModal();
+                        showMessage(data.message, 'success');
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showMessage(data.errors ? data.errors.join('<br>') : 'Грешка при запазване', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('Грешка при изпращане на формата', 'error');
+                });
+            });
+        }
+
+        function showMessage(message, type) {
+            const container = document.getElementById('messageContainer');
+            const style = type === 'success' 
+                ? 'padding: 12px; margin-bottom: 16px; background: #f0f0f0; border: 1px solid #000;'
+                : 'padding: 12px; margin-bottom: 16px; background: #fee; border: 1px solid #c00; color: #c00;';
+            container.innerHTML = `<div style="${style}">${message}</div>`;
+        }
+
+        // Close modal on outside click
+        document.getElementById('userModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // helper to show confirm and submit form
+        function confirmAndSubmit(formId, message){
+            showConfirm(message, 'Потвърждение').then(ok => {
+                if(ok) document.getElementById(formId).submit();
+            });
+        }
+    </script>
+}

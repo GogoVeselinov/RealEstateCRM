@@ -1,0 +1,148 @@
+@model List<RealEstateCRM.Models.ViewModels.AppSettingViewModel>
+
+@{
+    ViewData["Title"] = "Настройки на системата";
+    var groupedSettings = Model.GroupBy(s => s.Category).OrderBy(g => g.Key);
+}
+
+<div class="wrap">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>Настройки на системата</h2>
+        <a href="@Url.Action("Index")" class="btn">← Назад към потребители</a>
+    </div>
+
+    <div id="messageContainer"></div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div style="padding: 12px; margin-bottom: 16px; background: #f0f0f0; border: 1px solid #000;">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div style="padding: 12px; margin-bottom: 16px; background: #f0f0f0; border: 1px solid #000;">
+            Няма конфигурирани настройки. Може да добавите настройки чрез миграции или seed данни.
+        </div>
+    }
+    else
+    {
+        @foreach (var group in groupedSettings)
+        {
+            <div style="margin-bottom: 24px;">
+                <h3 style="padding: 12px; background: #000; color: #fff; margin: 0;">@group.Key</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ключ</th>
+                            <th>Стойност</th>
+                            <th>Описание</th>
+                            <th style="text-align: right;">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var setting in group)
+                        {
+                            <tr>
+                                <td><code>@setting.Key</code></td>
+                                <td><span class="badge">@setting.Value</span></td>
+                                <td><small style="color: #666;">@(setting.Description ?? "-")</small></td>
+                                <td style="text-align: right;">
+                                    <button type="button" class="btn secondary" onclick="showEditFormAjax('@setting.Id')">
+                                        Редактирай
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <tr id="edit-@setting.Id" style="display: none;">
+                                <td colspan="4" style="background: #f5f5f5; padding: 16px;" id="edit-content-@setting.Id">
+                                    <!-- Form will load here via AJAX -->
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    }
+
+    <div style="padding: 16px; border: 1px solid #000; margin-top: 24px;">
+        <h4>Информация</h4>
+        <p>
+            Настройките на системата се управляват от администратори и се съхраняват в базата данни.
+            Промените влизат в сила незабавно след запазване.
+        </p>
+        <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 16px 0;">
+        <small style="color: #666;">
+            За да добавите нови настройки, използвайте миграции или seed данни в кода на приложението.
+        </small>
+    </div>
+</div>
+
+<script>
+function showEditFormAjax(id) {
+    const row = document.getElementById('edit-' + id);
+    const content = document.getElementById('edit-content-' + id);
+    
+    if (row.style.display === 'table-row') {
+        row.style.display = 'none';
+        return;
+    }
+    
+    fetch('@Url.Action("GetEditSettingForm")?id=' + id)
+        .then(response => response.text())
+        .then(html => {
+            content.innerHTML = html;
+            row.style.display = 'table-row';
+            initSettingFormHandlers();
+        });
+}
+
+function hideEditForm(id) {
+    document.getElementById('edit-' + id).style.display = 'none';
+}
+
+function initSettingFormHandlers() {
+    const forms = document.querySelectorAll('form[data-ajax-form]');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const settingId = form.getAttribute('data-setting-id');
+            
+            fetch('@Url.Action("UpdateSetting")', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'RequestVerificationToken': formData.get('__RequestVerificationToken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    hideEditForm(settingId);
+                    showMessage(data.message, 'success');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showMessage(data.message || 'Грешка при запазване', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('Грешка при изпращане на формата', 'error');
+            });
+        });
+    });
+}
+
+function showMessage(message, type) {
+    const container = document.getElementById('messageContainer');
+    const style = type === 'success' 
+        ? 'padding: 12px; margin-bottom: 16px; background: #f0f0f0; border: 1px solid #000;'
+        : 'padding: 12px; margin-bottom: 16px; background: #fee; border: 1px solid #c00; color: #c00;';
+    container.innerHTML = `<div style="${style}">${message}</div>`;
+}
+</script>

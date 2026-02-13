@@ -1,0 +1,49 @@
+<div style="padding:16px;background:#fff;border:1px solid #e5e5e5;border-radius:6px">
+  <h4 style="margin-top:0">Добавяне на плащане</h4>
+  <form id="paymentForm" enctype="multipart/form-data">
+    <input type="hidden" name="visitId" value="@Model.Id" />
+    
+    <div style="margin-bottom:12px">
+      <label style="display:block;margin-bottom:4px;font-weight:600">Сума</label>
+      <input type="number" name="amount" step="0.01" min="0" required style="width:100%;padding:8px;border:1px solid #e5e5e5" />
+    </div>
+
+    <div style="display:flex;gap:12px;margin-bottom:12px">
+      <div style="flex:1">
+        <label style="display:block;margin-bottom:4px;font-weight:600">Тип плащане</label>
+        <select name="type" required style="width:100%;padding:8px;border:1px solid #e5e5e5">
+          <option value="">Изберете</option>
+          <option value="0">Таксa Преглед</option>
+          <option value="1">Комисион</option>
+          <option value="2">Депозит</option>
+          <option value="3">Други</option>
+        </select>
+      </div>
+      <div style="flex:1">
+        <label style="display:block;margin-bottom:4px;font-weight:600">Метод плащане</label>
+        <select name="method" required style="width:100%;padding:8px;border:1px solid #e5e5e5">
+          <option value="">Изберете</option>
+          <option value="0">Пари</option>
+          <option value="1">Банков Трансфер</option>
+          <option value="2">POS</option>
+          <option value="3">Други</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-bottom:12px">
+      <label style="display:block;margin-bottom:4px;font-weight:600">Бележки</label>
+      <textarea name="notes" rows="3" style="width:100%;padding:8px;border:1px solid #e5e5e5;font-family:system-ui"></textarea>
+    </div>
+
+    <div style="margin-bottom:12px">
+      <label style="display:block;margin-bottom:4px;font-weight:600">Файл (квитанция/документ)</label>
+      <input type="file" name="file" style="width:100%;padding:8px;border:1px solid #e5e5e5" />
+    </div>
+
+    <div style="text-align:right">
+      <button type="button" onclick="closePaymentForm()" class="btn secondary" style="margin-right:8px">Откажи</button>
+      <button type="submit" class="btn">Запази плащане</button>
+    </div>
+  </form>
+</div>
