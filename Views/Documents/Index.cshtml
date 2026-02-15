@@ -1,0 +1,409 @@
+@model RealEstateCRM.Models.ViewModels.DocumentsIndexViewModel
+@using RealEstateCRM.Models.Identity
+
+@{
+    ViewData["Title"] = "Документи";
+}
+
+<style>
+.documents-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr 420px;
+    gap: 16px;
+    align-items: start;
+}
+
+.card {
+    border: 1px solid #000;
+    background: #fff;
+    padding: 16px;
+}
+
+.card h3 {
+    margin: 0 0 12px 0;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e5e5e5;
+    font-weight: 600;
+}
+
+.section-muted {
+    color: #666;
+    font-size: 14px;
+}
+
+.templates-wrapper {
+    max-height: 520px;
+    overflow-y: auto;
+}
+
+.preview-container iframe {
+    width: 100%;
+    height: 480px;
+    border: 1px solid #ccc;
+}
+
+.table-clean {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-clean th,
+.table-clean td {
+    padding: 8px 6px;
+    border-bottom: 1px solid #e5e5e5;
+    text-align: left;
+}
+
+.table-clean th {
+    font-weight: 600;
+}
+
+.table-clean tr:hover {
+    background: #f7f7f7;
+}
+
+.js-template-item {
+    display: block;
+    padding: 6px 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.js-template-item:hover {
+    background: #f1f1f1;
+}
+
+.js-template-item.active-template {
+    background: #000;
+    color: #fff;
+}
+
+.recent-section {
+    margin-top: 24px;
+}
+
+</style>
+
+<div class="documents-layout">
+
+    <!-- Sidebar -->
+    <div class="card">
+        <div style="display:flex; justify-content: space-between; align-items:center;">
+            <h3>Шаблони</h3>
+            @if (User.IsInRole(AppRoles.Admin))
+            {
+                <a class="btn secondary" asp-action="Create">+ Шаблон</a>
+            }
+        </div>
+
+        <div class="templates-wrapper">
+            @await Html.PartialAsync("_TemplateSidebar", Model)
+        </div>
+    </div>
+
+    <!-- Dynamic Form -->
+    <div class="card">
+        <h3>Динамична форма</h3>
+        <div id="dynamic-form-container" class="section-muted">
+            Избери шаблон отляво, за да заредиш форма.
+        </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="card">
+        <h3>PDF Preview</h3>
+        <div id="document-preview-container" class="preview-container">
+            @await Html.PartialAsync("_DocumentPreview", null as string)
+        </div>
+    </div>
+
+</div>
+
+@if (Model.RecentDocuments.Any())
+{
+    <div class="card recent-section">
+        <h3>Последни документи</h3>
+
+        <table class="table-clean">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Шаблон</th>
+                    <th style="text-align:right;">Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var doc in Model.RecentDocuments)
+                {
+                    <tr>
+                        <td>@doc.CreatedAtUtc.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>@doc.DocumentTemplate?.Name</td>
+                        <td style="text-align:right;">
+                            <a class="btn secondary"
+                               asp-action="Details"
+                               asp-route-id="@doc.Id">
+                                Отвори
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@section Scripts {
+<script>
+(function () {
+
+    const formContainer = document.getElementById('dynamic-form-container');
+    const previewContainer = document.getElementById('document-preview-container');
+
+    async function loadTemplateForm(templateId, relatedEntityId, relatedEntityType) {
+
+        formContainer.innerHTML = '<p class="section-muted">Зареждане...</p>';
+
+        const params = new URLSearchParams({ templateId });
+
+        if (relatedEntityId) params.append('relatedEntityId', relatedEntityId);
+        if (relatedEntityType) params.append('relatedEntityType', relatedEntityType);
+
+        const response = await fetch(`/Documents/Generate?${params.toString()}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        if (!response.ok) {
+            formContainer.innerHTML = '<p style="color:#900;">Грешка при зареждане на форма.</p>';
+            return;
+        }
+
+        formContainer.innerHTML = await response.text();
+        wireDynamicForm();
+    }
+
+    function wireDynamicForm() {
+
+        const form = document.getElementById('dynamic-document-form');
+        if (!form) return;
+
+        const relatedEntityType = form.querySelector('#relatedEntityType');
+        const relatedEntityId = form.querySelector('#relatedEntityId');
+        const entitySearch = form.querySelector('#entity-search');
+        const autoFillBtn = form.querySelector('#autofill-btn');
+        const autoFillStatus = form.querySelector('#autofill-status');
+
+        function setAutoFillStatus(message, isError = false) {
+            if (!autoFillStatus) return;
+            autoFillStatus.textContent = message;
+            autoFillStatus.style.color = isError ? '#900' : '#666';
+        }
+
+        async function loadEntityOptions() {
+            if (!relatedEntityType || !relatedEntityId) return;
+
+            const typeValue = relatedEntityType.value;
+            if (!typeValue) {
+                relatedEntityId.innerHTML = '<option value="">-- избери --</option>';
+                return;
+            }
+
+            const q = (entitySearch?.value || '').trim();
+            const params = new URLSearchParams({ entityType: typeValue });
+            if (q) params.append('q', q);
+
+            const response = await fetch(`/Documents/SearchEntities?${params.toString()}`);
+            if (!response.ok) return;
+
+            const items = await response.json();
+            const currentValue = relatedEntityId.value;
+            relatedEntityId.innerHTML = '<option value="">-- избери --</option>';
+            let hasSelected = false;
+
+            items.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.text;
+                if (currentValue && currentValue === item.id) {
+                    option.selected = true;
+                    hasSelected = true;
+                }
+                relatedEntityId.appendChild(option);
+            });
+
+            if (currentValue && !hasSelected) {
+                const fallback = document.createElement('option');
+                fallback.value = currentValue;
+                fallback.textContent = `Избран обект (${currentValue})`;
+                fallback.selected = true;
+                relatedEntityId.appendChild(fallback);
+            }
+        }
+
+        if (relatedEntityType) {
+            relatedEntityType.addEventListener('change', async function () {
+                if (entitySearch) entitySearch.value = '';
+                await loadEntityOptions();
+            });
+        }
+
+        if (entitySearch) {
+            let timer;
+            entitySearch.addEventListener('input', function () {
+                clearTimeout(timer);
+                timer = setTimeout(loadEntityOptions, 250);
+            });
+        }
+
+        if (autoFillBtn) {
+            autoFillBtn.addEventListener('click', async function () {
+                const templateId = form.querySelector('[name="templateId"]').value;
+                const entityId = relatedEntityId?.value || '';
+                const entityType = relatedEntityType?.value || '';
+
+                if (!entityId) {
+                    setAutoFillStatus('Избери обект за Auto-fill.', true);
+                    return;
+                }
+
+                setAutoFillStatus('Зареждане на данни за Auto-fill...');
+
+                const params = new URLSearchParams({ templateId, relatedEntityId: entityId });
+                if (entityType) params.append('relatedEntityType', entityType);
+
+                const response = await fetch(`/Documents/AutofillData?${params.toString()}`);
+                if (!response.ok) {
+                    setAutoFillStatus('Грешка при Auto-fill заявката.', true);
+                    return;
+                }
+
+                const result = await response.json();
+                if (!result.success || !result.prefill) {
+                    setAutoFillStatus('Няма върнати данни за Auto-fill.', true);
+                    return;
+                }
+
+                const normalize = (s) => (s || '').toString().replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+                const resolved = result.resolved || {};
+                const prefill = Object.keys(resolved).length > 0 ? resolved : result.prefill;
+                const prefillMap = new Map();
+                const prefillKeys = Object.keys(prefill);
+
+                prefillKeys.forEach(key => {
+                    prefillMap.set(normalize(key), prefill[key]);
+                });
+
+                function resolvePrefillValue(control) {
+                    const name = control.getAttribute('name') || '';
+                    const dataFieldKey = control.getAttribute('data-field-key') || '';
+                    const labelEl = control.closest('.field-group')?.querySelector('label');
+                    const labelText = labelEl?.textContent || '';
+
+                    const directCandidates = [name, dataFieldKey, labelText]
+                        .map(normalize)
+                        .filter(Boolean);
+
+                    for (const candidate of directCandidates) {
+                        if (prefillMap.has(candidate)) return prefillMap.get(candidate);
+                    }
+
+                    return undefined;
+                }
+
+                const controls = form.querySelectorAll('input[name], textarea[name], select[name]');
+                const missed = [];
+                let applied = 0;
+                controls.forEach(control => {
+                    const name = control.getAttribute('name');
+                    if (!name) return;
+                    if (name === 'templateId' || name === 'relatedEntityId' || name === 'relatedEntityType') return;
+
+                    const value = resolvePrefillValue(control);
+                    if (value === undefined || value === null) {
+                        missed.push(name);
+                        return;
+                    }
+
+                    if (control.type === 'date') {
+                        control.value = value.toString().slice(0, 10);
+                    } else {
+                        control.value = value;
+                    }
+
+                    applied++;
+                });
+
+                const resolvedCount = Object.keys(resolved).length;
+                const rawCount = Object.keys(result.prefill || {}).length;
+                setAutoFillStatus(`Auto-fill: resolved ${resolvedCount}, raw ${rawCount}, попълнени ${applied}.`);
+                console.log('AutoFill debug', {
+                    templateId,
+                    entityId,
+                    entityType,
+                    prefillKeys,
+                    rawPrefillKeys: Object.keys(result.prefill || {}),
+                    missedFieldNames: missed
+                });
+            });
+        }
+
+        loadEntityOptions();
+
+        form.addEventListener('submit', async function (e) {
+
+            e.preventDefault();
+
+            const token = document.getElementById('__aft')?.value;
+            const body = new FormData(form);
+
+            previewContainer.innerHTML = '<p class="section-muted">Генериране на PDF...</p>';
+
+            const response = await fetch('/Documents/Generate', {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                body
+            });
+
+            if (!response.ok) {
+                previewContainer.innerHTML = '<p style="color:#900;">Грешка при генериране.</p>';
+                return;
+            }
+
+            const result = await response.json();
+
+            if (!result.success) {
+                previewContainer.innerHTML = '<p style="color:#900;">Неуспешно генериране.</p>';
+                return;
+            }
+
+            previewContainer.innerHTML = `
+                <iframe src="${result.filePath}"></iframe>
+                <div style="margin-top:8px; display:flex; gap:8px;">
+                    <a href="${result.filePath}" target="_blank" class="btn secondary">Отвори PDF</a>
+                    <a href="${result.detailsUrl}" class="btn secondary">Детайли</a>
+                </div>`;
+        });
+    }
+
+    document.querySelectorAll('.js-template-item').forEach(btn => {
+        btn.addEventListener('click', function () {
+
+            document.querySelectorAll('.js-template-item')
+                .forEach(x => x.classList.remove('active-template'));
+
+            this.classList.add('active-template');
+
+            const templateId = this.dataset.templateId;
+            loadTemplateForm(templateId);
+        });
+    });
+
+    const selectedTemplate = '@(Model.SelectedTemplateId?.ToString() ?? string.Empty)';
+    if (selectedTemplate) {
+        loadTemplateForm(selectedTemplate);
+    }
+
+})();
+</script>
+}

@@ -325,6 +325,60 @@ namespace RealEstateCRM.Migrations
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("RealEstateCRM.Models.Entities.DocumentTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileTemplatePath")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JsonSchema")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("TemplateType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TemplateType");
+
+                    b.HasIndex("Category", "IsActive");
+
+                    b.ToTable("DocumentTemplates");
+                });
+
             modelBuilder.Entity("RealEstateCRM.Models.Entities.Expense", b =>
                 {
                     b.Property<Guid>("Id")
@@ -366,6 +420,56 @@ namespace RealEstateCRM.Migrations
                     b.HasIndex("CreatedAtUtc");
 
                     b.ToTable("Expenses");
+                });
+
+            modelBuilder.Entity("RealEstateCRM.Models.Entities.GeneratedDocument", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JsonData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("RelatedEntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("RelatedEntityType")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TemplateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAtUtc");
+
+                    b.HasIndex("TemplateId");
+
+                    b.HasIndex("RelatedEntityType", "RelatedEntityId");
+
+                    b.ToTable("GeneratedDocuments");
                 });
 
             modelBuilder.Entity("RealEstateCRM.Models.Entities.ManagerPayrollOverride", b =>
@@ -791,6 +895,17 @@ namespace RealEstateCRM.Migrations
                     b.Navigation("OwnerUser");
                 });
 
+            modelBuilder.Entity("RealEstateCRM.Models.Entities.GeneratedDocument", b =>
+                {
+                    b.HasOne("RealEstateCRM.Models.Entities.DocumentTemplate", "DocumentTemplate")
+                        .WithMany("GeneratedDocuments")
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DocumentTemplate");
+                });
+
             modelBuilder.Entity("RealEstateCRM.Models.Entities.ManagerPayrollOverride", b =>
                 {
                     b.HasOne("RealEstateCRM.Models.Identity.ApplicationUser", "User")
@@ -860,6 +975,11 @@ namespace RealEstateCRM.Migrations
             modelBuilder.Entity("RealEstateCRM.Models.Entities.Client", b =>
                 {
                     b.Navigation("Visits");
+                });
+
+            modelBuilder.Entity("RealEstateCRM.Models.Entities.DocumentTemplate", b =>
+                {
+                    b.Navigation("GeneratedDocuments");
                 });
 
             modelBuilder.Entity("RealEstateCRM.Models.Entities.Property", b =>

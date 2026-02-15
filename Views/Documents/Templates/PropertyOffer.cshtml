@@ -1,0 +1,200 @@
+@model Dictionary<string, object?>
+@{
+    string GetValue(string key) => Model.ContainsKey(key) && Model[key] != null ? Model[key]!.ToString()! : "___________";
+}
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оферта за Имот</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: #000;
+            background: #fff;
+            padding: 40px 60px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px double #000;
+            padding-bottom: 15px;
+        }
+        .header h1 {
+            font-size: 20pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: #1976d2;
+        }
+        .header .subtitle {
+            font-size: 11pt;
+            font-style: italic;
+        }
+        .property-highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .property-address {
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .property-price {
+            font-size: 28pt;
+            font-weight: bold;
+            color: #ffd740;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table td {
+            padding: 8px;
+            border: 1px solid #000;
+        }
+        table td.label {
+            font-weight: bold;
+            width: 35%;
+            background: #f5f5f5;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 13pt;
+            margin-bottom: 10px;
+            color: #1976d2;
+            text-decoration: underline;
+        }
+        .description-box {
+            border: 1px solid #ddd;
+            padding: 20px;
+            background: #fafafa;
+            min-height: 120px;
+            text-align: justify;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .feature-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            background: white;
+        }
+        .feature-label {
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 5px;
+        }
+        .contact-box {
+            background: #e3f2fd;
+            border: 2px solid #1976d2;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px solid #ccc;
+            font-size: 9pt;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Оферта за Недвижим Имот</h1>
+        <div class="subtitle">Дата на офертата: @DateTime.Today.ToString("dd.MM.yyyy")</div>
+    </div>
+
+    <div class="property-highlight">
+        <div class="property-address">@GetValue("PropertyAddress")</div>
+        <div class="property-price">@GetValue("Price") лв.</div>
+    </div>
+
+    <div class="section">
+        <table>
+            <tr>
+                <td class="label">Адрес</td>
+                <td>@GetValue("PropertyAddress")</td>
+            </tr>
+            <tr>
+                <td class="label">Тип имот</td>
+                <td>@GetValue("PropertyType")</td>
+            </tr>
+            <tr>
+                <td class="label">Цена</td>
+                <td style="font-weight: bold; color: #1976d2; font-size: 14pt;">@GetValue("Price") лв.</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">ОПИСАНИЕ НА ИМОТА</div>
+        <div class="description-box">
+            @GetValue("Description")
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">ОСНОВНИ ХАРАКТЕРИСТИКИ</div>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-label">📍 Локация</div>
+                <div>@GetValue("PropertyAddress")</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-label">🏠 Тип</div>
+                <div>@GetValue("PropertyType")</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-label">💰 Цена</div>
+                <div style="font-weight: bold;">@GetValue("Price") лв.</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-label">📅 Дата на офертата</div>
+                <div>@DateTime.Today.ToString("dd.MM.yyyy")</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">УСЛОВИЯ НА ОФЕРТАТА</div>
+        <ul style="margin-left: 30px;">
+            <li>Офертата е валидна за срок от <strong>30 дни</strong> от датата на издаване</li>
+            <li>Цената е крайна и включва всички такси към агенцията</li>
+            <li>Възможност за огледи по предварителна уговорка</li>
+            <li>Предоставяме пълна правна и техническа документация за имота</li>
+            <li>Съдействие при финансиране и оформяне на сделката</li>
+        </ul>
+    </div>
+
+    <div class="contact-box">
+        <div style="font-size: 14pt; font-weight: bold; margin-bottom: 10px;">За повече информация</div>
+        <div>КРЕС Консулт ЕООД</div>
+        <div>Телефон: +359 XXX XXX XXX</div>
+        <div>Email: office@realestatecrm.bg</div>
+    </div>
+
+    <div class="footer">
+        Генериран от RealEstate CRM на @DateTime.Now.ToString("dd.MM.yyyy HH:mm")<br>
+        <small>Всички цени и параметри са валидни към момента на генериране на офертата</small>
+    </div>
+</body>
+</html>

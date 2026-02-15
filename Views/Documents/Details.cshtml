@@ -1,0 +1,29 @@
+@model RealEstateCRM.Models.Entities.GeneratedDocument
+
+@{
+    ViewData["Title"] = "Document Details";
+}
+
+<div class="wrap">
+    <h2>Document Details</h2>
+    <div style="margin-bottom: 12px;">
+        <strong>Template:</strong> @Model.DocumentTemplate?.Name<br />
+        <strong>Created:</strong> @Model.CreatedAtUtc.ToString("dd.MM.yyyy HH:mm")<br />
+        <strong>Related:</strong> @Model.RelatedEntityType - @Model.RelatedEntityId
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+        <div style="border:1px solid #000; padding:10px;">
+            <h3 style="margin-top:0;">PDF</h3>
+            <iframe src="@Model.FilePath" style="width:100%; height:520px; border:1px solid #ddd;"></iframe>
+            <div style="margin-top:8px;">
+                <a href="@Model.FilePath" target="_blank" class="btn secondary">Open in new tab</a>
+            </div>
+        </div>
+
+        <div style="border:1px solid #000; padding:10px;">
+            <h3 style="margin-top:0;">JSON Data</h3>
+            <pre style="white-space: pre-wrap; word-break: break-word;">@Model.JsonData</pre>
+        </div>
+    </div>
+</div>

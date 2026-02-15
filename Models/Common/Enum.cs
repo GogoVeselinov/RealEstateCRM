@@ -49,5 +49,20 @@ namespace RealEstateCRM.Models.Common
         NoShow = 4
     }
 
+    public enum DocumentTemplateType
+    {
+        Property = 0,
+        Client = 1,
+        Visit = 2,
+        Finance = 3
+    }
+
+    public enum DocumentRelatedEntityType
+    {
+        Property = 0,
+        Client = 1,
+        Visit = 2
+    }
+
 
 }

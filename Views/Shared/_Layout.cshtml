@@ -121,6 +121,10 @@
                 <a asp-controller="Properties" asp-action="Index" class="...">Properties</a>
                 <a asp-controller="Clients" asp-action="Index" class="...">Clients</a>
                 <a asp-controller="Visits" asp-action="Index" class="...">Visits</a>
+                @if (User.IsInRole(AppRoles.Admin) || User.IsInRole(AppRoles.Manager))
+                {
+                    <a asp-controller="Documents" asp-action="Index" class="...">Documents</a>
+                }
                 @if (User.IsInRole(AppRoles.Admin))
                 {
                     <a asp-controller="Finance" asp-action="Index" class="...">Finance</a>

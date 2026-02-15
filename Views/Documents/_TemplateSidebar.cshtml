@@ -1,0 +1,133 @@
+@model RealEstateCRM.Models.ViewModels.DocumentsIndexViewModel
+@using RealEstateCRM.Models.Identity
+
+<style>
+.template-category {
+    margin-bottom: 12px;
+    border: 1px solid #e5e5e5;
+}
+
+.template-category summary {
+    padding: 8px 10px;
+    cursor: pointer;
+    font-weight: 600;
+    background: #fafafa;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.template-category[open] summary {
+    background: #f2f2f2;
+}
+
+.template-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+}
+
+.template-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 6px;
+    align-items: center;
+}
+
+.template-btn {
+    text-align: left;
+    width: 100%;
+    border: 1px solid #000;
+    background: #fff;
+    padding: 6px 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.template-btn:hover {
+    background: #f3f3f3;
+}
+
+.template-btn.active-template {
+    background: #000;
+    color: #fff;
+}
+
+.template-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.template-actions .btn {
+    padding: 4px 6px;
+    font-size: 12px;
+}
+.empty-message {
+    color: #777;
+    font-size: 14px;
+}
+</style>
+
+@if (!Model.Templates.Any())
+{
+    <p class="empty-message">Няма активни шаблони.</p>
+}
+else
+{
+    foreach (var category in Model.Templates
+        .GroupBy(t => t.Category)
+        .OrderBy(g => g.Key))
+    {
+        <details open class="template-category">
+
+            <summary>@category.Key</summary>
+
+            <div class="template-list">
+
+                @foreach (var template in category
+                    .OrderBy(t => t.Name))
+                {
+                    <div class="template-row">
+
+                        <!-- Template Select Button -->
+                        <button type="button"
+                                class="template-btn js-template-item"
+                                data-template-id="@template.Id">
+                            @template.Name
+                        </button>
+
+                        <!-- Admin Controls -->
+                        @if (User.IsInRole(AppRoles.Admin))
+                        {
+                            <div class="template-actions">
+
+                                <a asp-controller="Documents"
+                                   asp-action="Create"
+                                   asp-route-id="@template.Id"
+                                   class="btn secondary"
+                                   title="Редакция">
+                                    ✎
+                                </a>
+
+                                <form asp-controller="Documents"
+                                      asp-action="ToggleTemplate"
+                                      asp-route-id="@template.Id"
+                                      method="post">
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="btn secondary"
+                                            title="Активирай/деактивирай">
+                                        @(template.IsActive ? "Off" : "On")
+                                    </button>
+                                </form>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+
+            </div>
+        </details>
+    }
+}

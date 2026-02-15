@@ -1,34 +1,31 @@
-@{
-    var categories = Enum.GetValues(typeof(RealEstateCRM.Models.Entities.ExpenseCategory))
-        .Cast<RealEstateCRM.Models.Entities.ExpenseCategory>();
-}
-
-<form id="expenseForm" method="post">
-    <h3 style="margin-top:0">+ Добави разход</h3>
-    
+<div style="padding:16px;background:#fff;border:1px solid #e5e5e5;border-radius:6px">
+  <h4 style="margin-top:0">Добавяне на Разход</h4>
+  <form id="expenseForm">
     <div style="margin-bottom:12px">
-        <label style="display:block;margin-bottom:4px;font-weight:700">Категория</label>
-        <select name="Category" style="width:100%;padding:8px;border:1px solid #e5e5e5" required>
-            <option value="">-- Избери категория --</option>
-            @foreach(var cat in categories)
-            {
-                <option value="@cat">@cat</option>
-            }
-        </select>
+      <label style="display:block;margin-bottom:4px;font-weight:600">Категория</label>
+      <select name="category" required style="width:100%;padding:8px;border:1px solid #e5e5e5">
+        <option value="">Изберете категория</option>
+        <option value="0">Офис</option>
+        <option value="1">Маркетинг</option>
+        <option value="2">Комунални услуги</option>
+        <option value="3">Бонус Зарплата</option>
+        <option value="4">Други</option>
+      </select>
     </div>
 
     <div style="margin-bottom:12px">
-        <label style="display:block;margin-bottom:4px;font-weight:700">Сума</label>
-        <input type="number" name="Amount" step="0.01" placeholder="0.00" style="width:100%;padding:8px;border:1px solid #e5e5e5" required />
+      <label style="display:block;margin-bottom:4px;font-weight:600">Сума</label>
+      <input type="number" name="amount" step="0.01" min="0" required style="width:100%;padding:8px;border:1px solid #e5e5e5" />
     </div>
 
     <div style="margin-bottom:12px">
-        <label style="display:block;margin-bottom:4px;font-weight:700">Описание</label>
-        <textarea name="Description" style="width:100%;padding:8px;border:1px solid #e5e5e5;resize:vertical;min-height:60px"></textarea>
+      <label style="display:block;margin-bottom:4px;font-weight:600">Описание</label>
+      <textarea name="description" rows="3" required style="width:100%;padding:8px;border:1px solid #e5e5e5;font-family:system-ui"></textarea>
     </div>
 
-    <div style="display:flex;gap:8px">
-        <button type="submit" class="btn">Запази</button>
-        <button type="button" onclick="closeExpenseForm()" class="btn secondary">Отмени</button>
+    <div style="text-align:right">
+      <button type="button" onclick="closeExpenseForm()" class="btn secondary" style="margin-right:8px">Откажи</button>
+      <button type="submit" class="btn">Запази Разход</button>
     </div>
-</form>
+  </form>
+</div>

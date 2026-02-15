@@ -1,0 +1,360 @@
+@model RealEstateCRM.Models.ViewModels.DynamicFormViewModel
+
+@functions {
+    private static string NormalizeKey(string? key)
+    {
+        if (string.IsNullOrWhiteSpace(key)) return string.Empty;
+        var chars = key.Where(char.IsLetterOrDigit).ToArray();
+        return new string(chars).ToLowerInvariant();
+    }
+
+    private static string ResolvePrefillValue(Dictionary<string, string> values, string fieldName, string? fieldLabel)
+    {
+        if (values.TryGetValue(fieldName, out var direct))
+            return direct;
+
+        var normalizedFieldName = NormalizeKey(fieldName);
+        var normalizedFieldLabel = NormalizeKey(fieldLabel);
+
+        foreach (var pair in values)
+        {
+            var key = NormalizeKey(pair.Key);
+            if (!string.IsNullOrWhiteSpace(normalizedFieldName) && key == normalizedFieldName)
+                return pair.Value;
+            if (!string.IsNullOrWhiteSpace(normalizedFieldLabel) && key == normalizedFieldLabel)
+                return pair.Value;
+        }
+
+        return string.Empty;
+    }
+
+    private string GetFieldHint(string templateName, RealEstateCRM.Models.Common.DocumentTemplateType templateType, RealEstateCRM.Models.ViewModels.DocumentSchemaFieldViewModel field)
+    {
+        if (!string.IsNullOrWhiteSpace(field.HelpText))
+            return field.HelpText!;
+
+        var key = string.IsNullOrWhiteSpace(field.Name) ? field.Label : field.Name;
+
+        if (templateName == "Brokerage Contract (Sale)")
+        {
+            return key switch
+            {
+                "AgencyName" => "Въведи юридическото име на агенцията, както ще се изпише в договора.",
+                "ClientName" => "Въведи трите имена на клиента по лична карта.",
+                "ClientEGN" => "Въведи ЕГН на клиента (10 цифри).",
+                "PropertyAddress" => "Въведи пълния административен адрес на имота.",
+                "ListingPrice" => "Въведи офертната цена на имота (само число).",
+                "CommissionPercentage" => "Въведи комисионна в проценти, напр. 3 или 3.5.",
+                "ContractStartDate" => "Избери началната дата на договора.",
+                "ContractDurationMonths" => "Въведи срока на договора в месеци.",
+                _ => "Попълни стойност според данните от договора за посредничество."
+            };
+        }
+
+        if (templateName == "Property Viewing Protocol")
+        {
+            return key switch
+            {
+                "ClientName" => "Име на клиента, който е присъствал на огледа.",
+                "PropertyAddress" => "Адрес на огледания имот.",
+                "VisitDate" => "Дата на проведения оглед.",
+                "BrokerName" => "Име на брокера, провел огледа.",
+                "Notes" => "Кратки бележки и впечатления от огледа.",
+                _ => "Попълни данни от протокола за оглед."
+            };
+        }
+
+        if (templateName == "Receipt")
+        {
+            return key switch
+            {
+                "PayerName" => "Лице/фирма, която извършва плащането.",
+                "Amount" => "Точна платена сума (само число).",
+                "PaymentDate" => "Дата на плащане по разписката.",
+                "PaymentReason" => "Основание за плащане (напр. комисионна, капаро).",
+                _ => "Попълни данни от разписката."
+            };
+        }
+
+        if (templateName == "Deposit Agreement")
+        {
+            return key switch
+            {
+                "BuyerName" => "Трите имена на купувача.",
+                "SellerName" => "Трите имена на продавача.",
+                "PropertyAddress" => "Пълен адрес на имота.",
+                "DepositAmount" => "Размер на депозита (само число).",
+                "DepositDate" => "Дата на сключване/плащане на депозита.",
+                _ => "Попълни данни за споразумението за депозит."
+            };
+        }
+
+        if (templateName == "GDPR Consent")
+        {
+            return key switch
+            {
+                "ClientName" => "Трите имена на лицето, което дава съгласие.",
+                "ClientEGN" => "ЕГН на лицето (10 цифри).",
+                "ConsentDate" => "Дата на подписване на съгласието.",
+                _ => "Попълни данни от декларацията за GDPR съгласие."
+            };
+        }
+
+        if (templateName == "Property Offer")
+        {
+            return key switch
+            {
+                "PropertyAddress" => "Адрес на имота, за който се изготвя офертата.",
+                "PropertyType" => "Тип на имота (напр. Апартамент, Къща, Офис).",
+                "Price" => "Предложена цена (само число).",
+                "Description" => "Ключови характеристики и предимства на имота.",
+                _ => "Попълни данни за имотната оферта."
+            };
+        }
+
+        return key switch
+        {
+            "AgencyName" => "Попълни името на агенцията по договора.",
+            "ClientName" => "Попълни трите имена на клиента.",
+            "ClientEGN" => "Попълни валидно ЕГН на клиента.",
+            "PropertyAddress" => "Попълни точния адрес на имота.",
+            "ListingPrice" => "Попълни офертната цена на имота.",
+            "Price" => "Попълни договорената цена.",
+            "CommissionPercentage" => "Попълни процента комисиона без символ %.",
+            "ContractStartDate" => "Избери начална дата на договора.",
+            "ContractDurationMonths" => "Попълни срок в месеци.",
+            "VisitDate" => "Избери датата на огледа.",
+            "BrokerName" => "Попълни името на отговорния брокер.",
+            "Notes" => "Опиши допълнителни бележки по документа.",
+            "Amount" => "Попълни сума в числов формат.",
+            "PaymentDate" => "Избери дата на плащане.",
+            "PaymentReason" => "Попълни основание за плащането.",
+            "BuyerName" => "Попълни името на купувача.",
+            "SellerName" => "Попълни името на продавача.",
+            "DepositAmount" => "Попълни размер на депозита.",
+            "DepositDate" => "Избери дата на депозита.",
+            "ConsentDate" => "Избери дата на съгласието.",
+            "PropertyType" => "Попълни типа на имота (напр. Апартамент).",
+            "Description" => "Въведи подробно описание.",
+            _ => field.Type switch
+            {
+                "number" => "Попълни стойност в числов формат.",
+                "date" => "Избери дата.",
+                "textarea" => "Попълни свободен текст.",
+                _ => "Попълни стойност в това поле."
+            }
+        };
+    }
+}
+
+<style>
+/* --- GLOBAL FIX --- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* --- WRAPPER --- */
+.dynamic-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    min-width: 0;
+}
+
+/* --- HEADER --- */
+.template-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.template-title {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.badge {
+    font-size: 12px;
+    border: 1px solid #000;
+    padding: 2px 6px;
+    margin-left: 8px;
+}
+
+/* --- ENTITY SECTION --- */
+.entity-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    align-items: end;
+    padding: 12px;
+    border: 1px solid #e5e5e5;
+    background: #fafafa;
+    width: 100%;
+    min-width: 0;
+}
+
+.entity-section > div {
+    min-width: 0;
+}
+
+/* --- FIELD GROUP --- */
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.field-group label {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* --- INPUTS --- */
+.input,
+.select,
+.textarea {
+    width: 100%;
+    max-width: 100%;
+    padding: 8px;
+    border: 1px solid #000;
+    background: #fff;
+    font-size: 14px;
+}
+
+.textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* --- GENERATE BUTTON --- */
+.generate-section {
+    padding-top: 14px;
+    border-top: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* --- ERROR --- */
+.error-message {
+    color: #900;
+    font-size: 14px;
+}
+</style>
+
+
+<form id="dynamic-document-form" class="dynamic-form-wrapper">
+
+    <input type="hidden" name="templateId" value="@Model.TemplateId" />
+
+    <!-- TEMPLATE HEADER -->
+    <div class="template-header">
+        <span class="template-title">@Model.TemplateName</span>
+        <span class="badge">@Model.TemplateType</span>
+    </div>
+
+    <!-- RELATED ENTITY SECTION -->
+    <div class="entity-section">
+
+        <div class="field-group">
+            <label>Свързан обект</label>
+            <select id="relatedEntityType" name="relatedEntityType" class="select">
+                <option value="">Няма</option>
+                <option value="Property" selected="@(Model.RelatedEntityType == RealEstateCRM.Models.Common.DocumentRelatedEntityType.Property)">Имот</option>
+                <option value="Client" selected="@(Model.RelatedEntityType == RealEstateCRM.Models.Common.DocumentRelatedEntityType.Client)">Клиент</option>
+                <option value="Visit" selected="@(Model.RelatedEntityType == RealEstateCRM.Models.Common.DocumentRelatedEntityType.Visit)">Оглед</option>
+            </select>
+        </div>
+
+        <div class="field-group">
+            <label>Избери обект (автоматично задава Entity Id)</label>
+            <input id="entity-search" class="input" placeholder="Търси по име, адрес, имейл..." />
+            <select id="relatedEntityId" name="relatedEntityId" class="select">
+                <option value="">-- избери --</option>
+                @if (Model.RelatedEntityId.HasValue)
+                {
+                    <option value="@Model.RelatedEntityId" selected>@Model.RelatedEntityId</option>
+                }
+            </select>
+            <small style="color:#666;">След избор Auto-fill ще попълни подходящите полета.</small>
+        </div>
+
+        <div>
+            <button id="autofill-btn"
+                    type="button"
+                    class="btn secondary"
+                    style="height:38px;">
+                Auto-fill
+            </button>
+            <div id="autofill-status" style="margin-top:6px; font-size:12px; color:#666;"></div>
+        </div>
+
+    </div>
+
+    <!-- DYNAMIC FIELDS -->
+    @if (!Model.Fields.Any())
+    {
+        <p class="error-message">
+            Невалиден или празен Json Schema.
+        </p>
+    }
+    else
+    {
+        foreach (var field in Model.Fields)
+        {
+            var fieldName = field.Name;
+            var fieldLabel = string.IsNullOrWhiteSpace(field.Label) ? fieldName : field.Label;
+            var fieldType = string.IsNullOrWhiteSpace(field.Type) ? "text" : field.Type;
+            var prefill = ResolvePrefillValue(Model.PrefillValues, fieldName, fieldLabel);
+
+            <div class="field-group">
+
+                <small style="color:#666; margin-bottom:2px;">@GetFieldHint(Model.TemplateName, Model.TemplateType, field)</small>
+
+                <label>
+                    @fieldLabel
+                    @if (field.Required)
+                    {
+                        <span style="color:#900;">*</span>
+                    }
+                </label>
+
+                @if (string.Equals(fieldType, "textarea", StringComparison.OrdinalIgnoreCase))
+                {
+                    <textarea name="@fieldName"
+                              data-field-key="@fieldName"
+                              class="textarea"
+                              @(field.Required ? "required" : null)>
+@prefill</textarea>
+                }
+                else
+                {
+                    var inputType = fieldType.ToLowerInvariant() switch
+                    {
+                        "number" => "number",
+                        "date" => "date",
+                        _ => "text"
+                    };
+
+                    <input type="@inputType"
+                           name="@fieldName"
+                              data-field-key="@fieldName"
+                           value="@prefill"
+                           class="input"
+                           @(field.Required ? "required" : null) />
+                }
+
+            </div>
+        }
+    }
+
+    <!-- GENERATE BUTTON -->
+    <div class="generate-section">
+        <button type="submit" class="btn">
+            Генерирай PDF
+        </button>
+    </div>
+
+</form>

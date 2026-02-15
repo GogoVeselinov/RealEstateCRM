@@ -1,27 +1,26 @@
-@{
-    var settings = (RealEstateCRM.Models.Entities.PayrollSettings)(ViewBag.PayrollSettings);
-}
+@model RealEstateCRM.Models.Entities.PayrollSettings
 
-<form id="payrollSettingsForm" method="post">
-    <h3 style="margin-top:0">⚙ Настройки на заплатоносност</h3>
-    
+<div style="padding:16px;background:#fff;border:1px solid #e5e5e5;border-radius:6px">
+  <h4 style="margin-top:0">Глобални Настройки на Заплатоносност</h4>
+  <form id="payrollSettingsForm">
     <div style="margin-bottom:12px">
-        <label style="display:block;margin-bottom:4px;font-weight:700">Базова заплата</label>
-        <input type="number" name="BaseSalary" step="0.01" value="@settings?.BaseSalary" style="width:100%;padding:8px;border:1px solid #e5e5e5" required />
+      <label style="display:block;margin-bottom:4px;font-weight:600">Базична Зарплата</label>
+      <input type="number" name="baseSalary" value="@Model.BaseSalary" step="0.01" min="0" required style="width:100%;padding:8px;border:1px solid #e5e5e5" />
     </div>
 
     <div style="margin-bottom:12px">
-        <label style="display:block;margin-bottom:4px;font-weight:700">Процент комисион (%)</label>
-        <input type="number" name="CommissionPercentage" step="0.01" value="@settings?.CommissionPercentage" style="width:100%;padding:8px;border:1px solid #e5e5e5" required />
+      <label style="display:block;margin-bottom:4px;font-weight:600">Процент Комисионна (%)</label>
+      <input type="number" name="commissionPercentage" value="@Model.CommissionPercentage" step="0.01" min="0" max="100" required style="width:100%;padding:8px;border:1px solid #e5e5e5" />
     </div>
 
     <div style="margin-bottom:12px">
-        <label style="display:block;margin-bottom:4px;font-weight:700">Бонус за посещение</label>
-        <input type="number" name="VisitBonus" step="0.01" value="@settings?.VisitBonus" style="width:100%;padding:8px;border:1px solid #e5e5e5" required />
+      <label style="display:block;margin-bottom:4px;font-weight:600">Бонус за Оглед</label>
+      <input type="number" name="visitBonus" value="@Model.VisitBonus" step="0.01" min="0" required style="width:100%;padding:8px;border:1px solid #e5e5e5" />
     </div>
 
-    <div style="display:flex;gap:8px">
-        <button type="submit" class="btn">Запази</button>
-        <button type="button" onclick="closePayrollSettingsForm()" class="btn secondary">Отмени</button>
+    <div style="text-align:right">
+      <button type="button" onclick="closePayrollSettingsForm()" class="btn secondary" style="margin-right:8px">Откажи</button>
+      <button type="submit" class="btn">Запази Настройки</button>
     </div>
-</form>
+  </form>
+</div>

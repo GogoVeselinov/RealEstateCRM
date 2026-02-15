@@ -1,260 +1,320 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\RealEstateCRM.bundle.scp.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\RealEstateCRM.bundle.scp.css",
       "PackagePath": "staticwebassets\\RealEstateCRM.xmc1zl7u99.bundle.scp.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\css\\site.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\favicon.ico",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\documents\\2026\\02\\Brokerage Contract (Sale)_041d3b012d0b4475abc1b5a195435106.pdf",
+      "PackagePath": "staticwebassets\\documents\\2026\\02\\Brokerage Contract (Sale)_041d3b012d0b4475abc1b5a195435106.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\documents\\2026\\02\\Brokerage Contract (Sale)_070682ae95584f3bb39f9ebc65161eed.pdf",
+      "PackagePath": "staticwebassets\\documents\\2026\\02\\Brokerage Contract (Sale)_070682ae95584f3bb39f9ebc65161eed.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\documents\\2026\\02\\Brokerage Contract (Sale)_22951a2ac73b475a925590534ee2e01b.pdf",
+      "PackagePath": "staticwebassets\\documents\\2026\\02\\Brokerage Contract (Sale)_22951a2ac73b475a925590534ee2e01b.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\documents\\2026\\02\\Brokerage Contract (Sale)_33fba16345994f3fb26c613c2db891a7.pdf",
+      "PackagePath": "staticwebassets\\documents\\2026\\02\\Brokerage Contract (Sale)_33fba16345994f3fb26c613c2db891a7.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\documents\\2026\\02\\Brokerage Contract (Sale)_9a3487e57f3549418a493ef788543be2.pdf",
+      "PackagePath": "staticwebassets\\documents\\2026\\02\\Brokerage Contract (Sale)_9a3487e57f3549418a493ef788543be2.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\documents\\2026\\02\\Brokerage Contract (Sale)_badc7a09969c4c17b44daeb3106c10c9.pdf",
+      "PackagePath": "staticwebassets\\documents\\2026\\02\\Brokerage Contract (Sale)_badc7a09969c4c17b44daeb3106c10c9.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\documents\\2026\\02\\Brokerage Contract (Sale)_bc1e0bf577b1428884306464f2dc670d.pdf",
+      "PackagePath": "staticwebassets\\documents\\2026\\02\\Brokerage Contract (Sale)_bc1e0bf577b1428884306464f2dc670d.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\documents\\2026\\02\\Brokerage Contract (Sale)_f199ccfb0d7b475c976d894f982984a0.pdf",
+      "PackagePath": "staticwebassets\\documents\\2026\\02\\Brokerage Contract (Sale)_f199ccfb0d7b475c976d894f982984a0.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\documents\\2026\\02\\Deposit Agreement_b6998656b6674f67b2c9e3d6f58679c6.pdf",
+      "PackagePath": "staticwebassets\\documents\\2026\\02\\Deposit Agreement_b6998656b6674f67b2c9e3d6f58679c6.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\documents\\2026\\02\\Property Offer_59232aab4e39464788e11b8cd5d98527.pdf",
+      "PackagePath": "staticwebassets\\documents\\2026\\02\\Property Offer_59232aab4e39464788e11b8cd5d98527.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\documents\\2026\\02\\Receipt_5d5c32a2bac447daa64cfa03841592ec.pdf",
+      "PackagePath": "staticwebassets\\documents\\2026\\02\\Receipt_5d5c32a2bac447daa64cfa03841592ec.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\documents\\2026\\02\\Receipt_8dbca786e5254cc6bf9ad77bf3be8e14.pdf",
+      "PackagePath": "staticwebassets\\documents\\2026\\02\\Receipt_8dbca786e5254cc6bf9ad77bf3be8e14.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\documents\\2026\\02\\Receipt_d2ff5a15f91242468ed15c54b218cbe7.pdf",
+      "PackagePath": "staticwebassets\\documents\\2026\\02\\Receipt_d2ff5a15f91242468ed15c54b218cbe7.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\js\\site.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\LICENSE",
       "PackagePath": "staticwebassets\\lib\\bootstrap"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
       "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.min.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.min.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\LICENSE.md"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.min.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery\\LICENSE.txt",
       "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery\\dist\\jquery.js",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery\\dist\\jquery.slim.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery\\dist\\jquery.slim.js",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.slim.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery\\dist\\jquery.slim.min.js",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery\\dist\\jquery.slim.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.slim.min.js"
     },
     {
-      "Id": "C:\\Users\\Go6ko\\Desktop\\RealEstateCRM\\wwwroot\\lib\\jquery\\dist\\jquery.slim.min.map",
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\lib\\jquery\\dist\\jquery.slim.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.slim.min.map"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\uploads\\payments\\62e95a04-ded2-4033-ac74-0c75399bdc83_Профил_на_Български.pdf",
+      "PackagePath": "staticwebassets\\uploads\\payments\\62e95a04-ded2-4033-ac74-0c75399bdc83_Профил_на_Български.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Go6ko\\Desktop\\Краси Дипломен\\Краси Дипломен\\RealEstateCRM\\wwwroot\\uploads\\payments\\d9b27db9-e203-4782-98c5-a9d1bc8f7b63_STILIY~2.PDF",
+      "PackagePath": "staticwebassets\\uploads\\payments\\d9b27db9-e203-4782-98c5-a9d1bc8f7b63_STILIY~2.PDF"
     },
     {
       "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.RealEstateCRM.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",

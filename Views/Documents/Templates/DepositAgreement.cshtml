@@ -1,0 +1,176 @@
+@model Dictionary<string, object?>
+@{
+    string GetValue(string key) => Model.ContainsKey(key) && Model[key] != null ? Model[key]!.ToString()! : "___________";
+}
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Договор за Капаро</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: #000;
+            background: #fff;
+            padding: 40px 60px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px double #000;
+            padding-bottom: 15px;
+        }
+        .header h1 {
+            font-size: 18pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .header .subtitle {
+            font-size: 11pt;
+            font-style: italic;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table td {
+            padding: 8px;
+            border: 1px solid #000;
+        }
+        table td.label {
+            font-weight: bold;
+            width: 35%;
+            background: #f5f5f5;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 13pt;
+            margin-bottom: 10px;
+            text-decoration: underline;
+        }
+        .article {
+            margin-bottom: 15px;
+        }
+        .article-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .highlight-box {
+            background: #ffe6e6;
+            border: 2px solid #d32f2f;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .signatures {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature-block {
+            text-align: center;
+            width: 45%;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 60px;
+            padding-top: 5px;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px solid #ccc;
+            font-size: 9pt;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Договор за Капаро при Покупко-Продажба на Недвижим Имот</h1>
+        <div class="subtitle">Сключен на @DateTime.Today.ToString("dd.MM.yyyy") г.</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">СТРАНИ ПО ДОГОВОРА</div>
+        
+        <table>
+            <tr>
+                <td class="label">Купувач</td>
+                <td>@GetValue("BuyerName")</td>
+            </tr>
+            <tr>
+                <td class="label">Продавач</td>
+                <td>@GetValue("SellerName")</td>
+            </tr>
+            <tr>
+                <td class="label">Адрес на имота</td>
+                <td>@GetValue("PropertyAddress")</td>
+            </tr>
+            <tr>
+                <td class="label">Размер на капарото</td>
+                <td>@GetValue("DepositAmount") лв.</td>
+            </tr>
+            <tr>
+                <td class="label">Дата на внасяне</td>
+                <td>@GetValue("DepositDate")</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">ПРЕДМЕТ НА ДОГОВОРА</div>
+        
+        <div class="article">
+            <div class="article-title">Член 1.</div>
+            <p>Купувачът внася капаро в размер на <strong>@GetValue("DepositAmount") лв.</strong> 
+            на Продавача във връзка с намерението си да закупи недвижим имот, находящ се на адрес: 
+            <strong>@GetValue("PropertyAddress")</strong>.</p>
+        </div>
+
+        <div class="highlight-box">
+            <div class="article-title">Член 2. Условия за задържане на капарото</div>
+            <p><strong>В случай че Купувачът откаже да сключи окончателен договор</strong>, 
+            внесеното капаро остава при Продавача.</p>
+            <p style="margin-top: 10px;"><strong>В случай че Продавачът откаже да сключи окончателен договор</strong>, 
+            той дължи на Купувача двойния размер на капарото.</p>
+        </div>
+
+        <div class="article">
+            <div class="article-title">Член 3. Приспадане към окончателна цена</div>
+            <p>При успешното сключване на окончателен нотариален акт за покупко-продажба, 
+            внесеното капаро се приспада от общата продажна цена на имота.</p>
+        </div>
+
+        <div class="article">
+            <div class="article-title">Член 4. Срок за сключване на окончателен договор</div>
+            <p>Страните се задължават да сключат окончателен договор за покупко-продажба 
+            в срок от <strong>30 (тридесет) дни</strong> от датата на подписване на настоящия договор.</p>
+        </div>
+    </div>
+
+    <div class="signatures">
+        <div class="signature-block">
+            <div>Продавач:</div>
+            <div class="signature-line">@GetValue("SellerName")</div>
+        </div>
+        <div class="signature-block">
+            <div>Купувач:</div>
+            <div class="signature-line">@GetValue("BuyerName")</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Генериран от RealEstate CRM на @DateTime.Now.ToString("dd.MM.yyyy HH:mm")
+    </div>
+</body>
+</html>

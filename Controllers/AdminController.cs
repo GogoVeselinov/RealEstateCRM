@@ -340,13 +340,13 @@ namespace RealEstateCRM.Controllers
         }
 
         // Audit Logs
-        public async Task<IActionResult> AuditLogs(int page = 1, string? action = null, string? entityType = null)
+        public async Task<IActionResult> AuditLogs(int page = 1, string? logAction = null, string? entityType = null)
         {
             var pageSize = 50;
-            var query = _db.AuditLogs.AsQueryable();
+            var query = _db.AuditLogs.Where(a => !a.IsDeleted).AsQueryable();
 
-            if (!string.IsNullOrEmpty(action))
-                query = query.Where(a => a.Action == action);
+            if (!string.IsNullOrEmpty(logAction))
+                query = query.Where(a => a.Action == logAction);
 
             if (!string.IsNullOrEmpty(entityType))
                 query = query.Where(a => a.EntityType == entityType);
@@ -370,7 +370,7 @@ namespace RealEstateCRM.Controllers
 
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling(total / (double)pageSize);
-            ViewBag.Action = action;
+            ViewBag.Action = logAction;
             ViewBag.EntityType = entityType;
 
             return View(logs);

@@ -8,6 +8,7 @@ using RealEstateCRM.Models.Common;
 using RealEstateCRM.Models.Entities;
 using RealEstateCRM.Models.Identity;
 using RealEstateCRM.Models.ViewModels;
+using System.Text.Json;
 
 namespace RealEstateCRM.Controllers;
 
@@ -116,6 +117,11 @@ public class VisitsController : Controller
             OwnerUserId = me
         };
         _db.Visits.Add(entity);
+
+        // Audit Log
+        CreateAuditLogEntry(me, (await _um.FindByIdAsync(me))?.Email ?? "", "Create", "Visit", entity.Id.ToString(), 
+            JsonSerializer.Serialize(new { entity.PropertyId, entity.ClientId, entity.VisitAtLocal, entity.DurationMin, entity.Status }));
+
         await _db.SaveChangesAsync();
         return Ok(new { ok = true });
     }
@@ -171,6 +177,8 @@ public class VisitsController : Controller
             if (v.OwnerUserId != me) return Forbid();
         }
 
+        var oldData = JsonSerializer.Serialize(new { v.PropertyId, v.ClientId, v.VisitAtLocal, v.DurationMin, v.Status, v.Notes, v.Outcome });
+
         v.PropertyId = vm.PropertyId;
         v.ClientId = vm.ClientId;
         v.VisitAtLocal = vm.VisitAtLocal;
@@ -180,6 +188,12 @@ public class VisitsController : Controller
         v.Notes = vm.Notes;
         v.Outcome = vm.Outcome;
         v.NextActionAt = vm.NextActionAt;
+
+        // Audit Log
+        var user = await _um.GetUserAsync(User);
+        var newData = JsonSerializer.Serialize(new { v.PropertyId, v.ClientId, v.VisitAtLocal, v.DurationMin, v.Status, v.Notes, v.Outcome });
+        CreateAuditLogEntry(user!.Id, user.Email ?? "", "Update", "Visit", v.Id.ToString(), 
+            $"Old: {oldData} | New: {newData}");
 
         await _db.SaveChangesAsync();
         return Ok(new { ok = true });
@@ -199,6 +213,12 @@ public class VisitsController : Controller
         }
 
         v.IsDeleted = true;
+
+        // Audit Log
+        var user = await _um.GetUserAsync(User);
+        CreateAuditLogEntry(user!.Id, user.Email ?? "", "Delete", "Visit", v.Id.ToString(), 
+            JsonSerializer.Serialize(new { v.PropertyId, v.ClientId, v.VisitAtLocal }));
+
         await _db.SaveChangesAsync();
         return Ok(new { ok = true });
     }
@@ -217,9 +237,16 @@ public class VisitsController : Controller
             if (v.OwnerUserId != me) return Forbid();
         }
 
+        var oldStatus = v.Status;
         v.Status = status;
         if (status == VisitStatus.Completed && v.Outcome == null)
             v.Outcome = "Проведен оглед.";
+
+        // Audit Log
+        var user = await _um.GetUserAsync(User);
+        CreateAuditLogEntry(user!.Id, user.Email ?? "", "Update", "Visit", v.Id.ToString(), 
+            $"Status changed from {oldStatus} to {status}");
+
         await _db.SaveChangesAsync();
         return Ok(new { ok = true });
     }
@@ -296,6 +323,11 @@ public class VisitsController : Controller
         };
 
         _db.VisitPayments.Add(payment);
+
+        // Audit Log
+        CreateAuditLogEntry(me2, (await _um.FindByIdAsync(me2))?.Email ?? "", "Create", "VisitPayment", payment.Id.ToString(), 
+            JsonSerializer.Serialize(new { payment.VisitId, payment.Amount, payment.PaymentType, payment.PaymentMethod }));
+
         await _db.SaveChangesAsync();
 
         var payments = await _db.VisitPayments
@@ -320,6 +352,12 @@ public class VisitsController : Controller
         }
 
         payment.IsDeleted = true;
+
+        // Audit Log
+        var user = await _um.GetUserAsync(User);
+        CreateAuditLogEntry(user!.Id, user.Email ?? "", "Delete", "VisitPayment", payment.Id.ToString(), 
+            JsonSerializer.Serialize(new { payment.VisitId, payment.Amount }));
+
         await _db.SaveChangesAsync();
 
         var payments = await _db.VisitPayments
@@ -380,5 +418,20 @@ public class VisitsController : Controller
 
         if (overlaps)
             ModelState.AddModelError(nameof(vm.VisitAtLocal), "Имате друг оглед в този интервал.");
+    }
+
+    private void CreateAuditLogEntry(string userId, string userEmail, string action, string entityType, string entityId, string? details)
+    {
+        var auditLog = new AuditLog
+        {
+            UserId = userId,
+            UserEmail = userEmail,
+            Action = action,
+            EntityType = entityType,
+            EntityId = entityId,
+            Details = details,
+            Timestamp = DateTime.UtcNow
+        };
+        _db.AuditLogs.Add(auditLog);
     }
 }

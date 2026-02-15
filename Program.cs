@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RealEstateCRM.Models.Identity;
 using RealEstateCRM.Data;
+using RealEstateCRM.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
 .AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+builder.Services.AddScoped<IDocumentGeneratorService, DocumentGeneratorService>();
 
 // Add Razor runtime compilation for hot reload in development
 if (builder.Environment.IsDevelopment())

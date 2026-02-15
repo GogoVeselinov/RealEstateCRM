@@ -23,6 +23,8 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ManagerPayrollOverride> ManagerPayrollOverrides => Set<ManagerPayrollOverride>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<AppSetting> AppSettings => Set<AppSetting>();
+    public DbSet<DocumentTemplate> DocumentTemplates => Set<DocumentTemplate>();
+    public DbSet<GeneratedDocument> GeneratedDocuments => Set<GeneratedDocument>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -32,6 +34,8 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
         b.Entity<Client>().HasQueryFilter(x => !x.IsDeleted);
         b.Entity<Property>().HasQueryFilter(x => !x.IsDeleted);
         b.Entity<Visit>().HasQueryFilter(x => !x.IsDeleted);
+        b.Entity<DocumentTemplate>().HasQueryFilter(x => !x.IsDeleted);
+        b.Entity<GeneratedDocument>().HasQueryFilter(x => !x.IsDeleted);
 
         // Индекси и ограничения
         b.Entity<Client>(e =>
@@ -121,6 +125,29 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
             e.Property(x => x.VisitBonus).HasPrecision(18, 2).IsRequired();
             e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
             e.HasIndex(x => x.UserId).IsUnique();
+        });
+
+        b.Entity<DocumentTemplate>(e =>
+        {
+            e.Property(x => x.Name).HasMaxLength(200).IsRequired();
+            e.Property(x => x.Category).HasMaxLength(100).IsRequired();
+            e.Property(x => x.JsonSchema).HasColumnType("nvarchar(max)").IsRequired();
+            e.Property(x => x.FileTemplatePath).HasMaxLength(300);
+            e.HasIndex(x => new { x.Category, x.IsActive });
+            e.HasIndex(x => x.TemplateType);
+        });
+
+        b.Entity<GeneratedDocument>(e =>
+        {
+            e.Property(x => x.JsonData).HasColumnType("nvarchar(max)").IsRequired();
+            e.Property(x => x.FilePath).HasMaxLength(300).IsRequired();
+            e.HasOne(x => x.DocumentTemplate)
+                .WithMany(x => x.GeneratedDocuments)
+                .HasForeignKey(x => x.TemplateId)
+                .OnDelete(DeleteBehavior.Restrict);
+            e.HasIndex(x => x.TemplateId);
+            e.HasIndex(x => new { x.RelatedEntityType, x.RelatedEntityId });
+            e.HasIndex(x => x.CreatedAtUtc);
         });
     }
 

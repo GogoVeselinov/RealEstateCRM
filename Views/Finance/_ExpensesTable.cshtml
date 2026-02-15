@@ -1,37 +1,46 @@
 @{
-    var expenses = (List<RealEstateCRM.Models.Entities.Expense>)(ViewBag.Expenses ?? new List<RealEstateCRM.Models.Entities.Expense>());
+    var expenses = (List<RealEstateCRM.Models.Entities.Expense>)ViewBag.Expenses;
+    var categoryNames = new Dictionary<int, string> { {0, "Офис"}, {1, "Маркетинг"}, {2, "Комунални"}, {3, "Бонус"}, {4, "Други"} };
     var isAdmin = (bool)ViewBag.IsAdmin;
 }
 
-<table>
-    <thead>
-        <tr>
-            <th>Дата</th>
-            <th>Категория</th>
-            <th>Описание</th>
-            <th>Сума</th>
-            @if(isAdmin) { <th>Действие</th> }
+<table style="width:100%;border-collapse:collapse">
+  <thead>
+    <tr style="border-bottom:2px solid #000">
+      <th style="padding:8px;text-align:left">Дата</th>
+      <th style="padding:8px;text-align:left">Категория</th>
+      <th style="padding:8px;text-align:left">Описание</th>
+      <th style="padding:8px;text-align:right">Сума</th>
+      @if (isAdmin)
+      {
+        <th style="padding:8px;text-align:center">Действие</th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @if (!expenses.Any())
+    {
+      <tr>
+        <td colspan="@(isAdmin ? 5 : 4)" style="padding:20px;text-align:center;color:#999">Няма разходи за периода</td>
+      </tr>
+    }
+    else
+    {
+      @foreach (var e in expenses.OrderByDescending(x => x.CreatedAtUtc))
+      {
+        <tr style="border-bottom:1px solid #e5e5e5">
+          <td style="padding:8px">@e.CreatedAtUtc.ToString("dd.MM.yyyy")</td>
+          <td style="padding:8px">@categoryNames.GetValueOrDefault((int)e.Category, e.Category.ToString())</td>
+          <td style="padding:8px">@e.Description</td>
+          <td style="padding:8px;text-align:right;font-weight:600">@e.Amount.ToString("F2")</td>
+          @if (isAdmin)
+          {
+            <td style="padding:8px;text-align:center">
+              <button type="button" onclick="deleteExpense('@e.Id')" class="btn secondary" style="padding:4px 8px;font-size:12px">Изтрий</button>
+            </td>
+          }
         </tr>
-    </thead>
-    <tbody>
-        @if(expenses.Count == 0)
-        {
-            <tr><td colspan="@(isAdmin ? 5 : 4)" style="text-align:center;padding:20px">Няма разходи</td></tr>
-        }
-        @foreach(var exp in expenses)
-        {
-            <tr>
-                <td>@exp.CreatedAtUtc.ToString("dd.MM.yyyy")</td>
-                <td>@exp.Category</td>
-                <td>@exp.Description</td>
-                <td>@exp.Amount.ToString("F2")</td>
-                @if(isAdmin)
-                {
-                    <td>
-                        <button onclick="deleteExpense(@exp.Id)" style="padding:4px 8px;border:1px solid #d32f2f;background:#fff;color:#d32f2f;cursor:pointer">Изтриване</button>
-                    </td>
-                }
-            </tr>
-        }
-    </tbody>
+      }
+    }
+  </tbody>
 </table>

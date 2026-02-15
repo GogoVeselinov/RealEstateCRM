@@ -1,0 +1,191 @@
+@model Dictionary<string, object?>
+@{
+    string GetValue(string key) => Model.ContainsKey(key) && Model[key] != null ? Model[key]!.ToString()! : "___________";
+}
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Декларация GDPR</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: #000;
+            background: #fff;
+            padding: 40px 60px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px double #000;
+            padding-bottom: 15px;
+        }
+        .header h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .header .subtitle {
+            font-size: 11pt;
+            font-style: italic;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table td {
+            padding: 8px;
+            border: 1px solid #000;
+        }
+        table td.label {
+            font-weight: bold;
+            width: 35%;
+            background: #f5f5f5;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 13pt;
+            margin-bottom: 10px;
+        }
+        .consent-text {
+            text-align: justify;
+            margin: 15px 0;
+            padding: 15px;
+            border-left: 3px solid #2196f3;
+            background: #e3f2fd;
+        }
+        ul {
+            margin-left: 30px;
+            margin-top: 10px;
+        }
+        ul li {
+            margin-bottom: 8px;
+        }
+        .checkbox-item {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #999;
+            background: #fafafa;
+        }
+        .checkbox {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #000;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .signature-block {
+            margin-top: 50px;
+            text-align: center;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            margin: 60px auto 0;
+            padding-top: 5px;
+            width: 60%;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px solid #ccc;
+            font-size: 9pt;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Декларация за Съгласие за Обработка на Лични Данни</h1>
+        <div class="subtitle">Съгласие по GDPR (Регламент (ЕС) 2016/679)</div>
+    </div>
+
+    <div class="section">
+        <table>
+            <tr>
+                <td class="label">Име на клиента</td>
+                <td>@GetValue("ClientName")</td>
+            </tr>
+            <tr>
+                <td class="label">ЕГН</td>
+                <td>@GetValue("ClientEGN")</td>
+            </tr>
+            <tr>
+                <td class="label">Дата на съгласието</td>
+                <td>@GetValue("ConsentDate")</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="consent-text">
+        <p><strong>Долуподписаният/ата</strong> <strong>@GetValue("ClientName")</strong>, 
+        декларирам, че съм запознат/а с политиката за поверителност на <strong>КРЕС Консулт ЕООД</strong> 
+        и давам изрично съгласие за обработка на моите лични данни.</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">1. ЦЕЛ НА ОБРАБОТКАТА</div>
+        <p>Давам съгласие личните ми данни да бъдат обработвани за следните цели:</p>
+        <ul>
+            <li>Предоставяне на услуги по брокерство на недвижими имоти</li>
+            <li>Маркетинг и комуникация относно имоти и оферти</li>
+            <li>Изпълнение на договорни задължения</li>
+            <li>Спазване на законови изисквания</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <div class="section-title">2. ОБРАБОТВАНИ ДАННИ</div>
+        <p>Съгласието включва обработка на следните категории лични данни:</p>
+        <ul>
+            <li>Име, презиме, фамилия</li>
+            <li>ЕГН/ЛНЧ</li>
+            <li>Телефонен номер и имейл адрес</li>
+            <li>Адрес на настоящо и постоянно пребиваване</li>
+            <li>Данни за предпочитания относно недвижими имоти</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <div class="section-title">3. ПРАВА НА СУБЕКТА НА ДАННИ</div>
+        <p>Имам право:</p>
+        <ul>
+            <li>На достъп до моите лични данни</li>
+            <li>На коригиране на неточни данни</li>
+            <li>На изтриване на данни ("право на забрава")</li>
+            <li>На ограничаване на обработката</li>
+            <li>На преносимост на данните</li>
+            <li>На възражение срещу обработката</li>
+            <li>Да оттегля съгласието си по всяко време</li>
+        </ul>
+    </div>
+
+    <div class="checkbox-item">
+        <span class="checkbox">✓</span>
+        <strong>Потвърждавам</strong>, че съм прочел/ла и разбрал/а условията за обработка на личните ми данни 
+        и давам доброволно и информирано съгласие.
+    </div>
+
+    <div class="signature-block">
+        <div>Дата: @GetValue("ConsentDate")</div>
+        <div class="signature-line">
+            <div>@GetValue("ClientName")</div>
+            <div style="font-size: 10pt; color: #666; margin-top: 5px;">Подпис</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Генериран от RealEstate CRM на @DateTime.Now.ToString("dd.MM.yyyy HH:mm")
+    </div>
+</body>
+</html>

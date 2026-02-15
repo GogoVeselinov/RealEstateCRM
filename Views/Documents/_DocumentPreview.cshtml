@@ -1,0 +1,10 @@
+@model string?
+
+@if (string.IsNullOrWhiteSpace(Model))
+{
+    <p style="color:#666;">Няма генериран документ.</p>
+}
+else
+{
+    <iframe src="@Model" style="width:100%; height:480px; border:1px solid #ccc;"></iframe>
+}

@@ -4,8 +4,90 @@
     ViewData["Title"] = "Audit Log";
     var currentPage = (int)ViewBag.CurrentPage;
     var totalPages = (int)ViewBag.TotalPages;
-    var action = ViewBag.Action as string;
+    var logAction = ViewBag.Action as string;
     var entityType = ViewBag.EntityType as string;
+}
+
+@functions {
+    private string GetActionLabel(string action)
+    {
+        return action switch
+        {
+            "Create" => "Създаване",
+            "Update" => "Редакция",
+            "Delete" => "Изтриване",
+            "Login" => "Вход",
+            "Lock" => "Заключване",
+            "Unlock" => "Отключване",
+            _ => action
+        };
+    }
+
+    private string GetEntityLabel(string entityType)
+    {
+        return entityType switch
+        {
+            "User" => "потребител",
+            "Client" => "клиент",
+            "Property" => "имот",
+            "Visit" => "оглед",
+            "VisitPayment" => "плащане по оглед",
+            "Expense" => "разход",
+            "PayrollSettings" => "настройки за заплащане",
+            "AppSetting" => "системна настройка",
+            _ => entityType
+        };
+    }
+
+    private string BuildSummary(RealEstateCRM.Models.ViewModels.AuditLogViewModel log)
+    {
+        var entity = GetEntityLabel(log.EntityType);
+        return log.Action switch
+        {
+            "Create" => $"Създаден е {entity}.",
+            "Update" => $"Редактиран е {entity}.",
+            "Delete" => $"Изтрит е {entity}.",
+            "Login" => "Потребителят е влязъл в системата.",
+            "Lock" => "Потребителят е заключен.",
+            "Unlock" => "Потребителят е отключен.",
+            _ => $"Извършено е действие върху {entity}."
+        };
+    }
+
+    private string PrettifyJson(string json)
+    {
+        try
+        {
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            return System.Text.Json.JsonSerializer.Serialize(doc.RootElement, new System.Text.Json.JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+        }
+        catch
+        {
+            return json;
+        }
+    }
+
+    private string PrettifyDetails(string? details)
+    {
+        if (string.IsNullOrWhiteSpace(details))
+            return "Няма детайли.";
+
+        var oldPrefix = "Old: ";
+        var newPrefix = " | New: ";
+        var separatorIndex = details.IndexOf(newPrefix, StringComparison.Ordinal);
+
+        if (details.StartsWith(oldPrefix, StringComparison.Ordinal) && separatorIndex > oldPrefix.Length)
+        {
+            var oldJson = details.Substring(oldPrefix.Length, separatorIndex - oldPrefix.Length).Trim();
+            var newJson = details.Substring(separatorIndex + newPrefix.Length).Trim();
+            return $"Старо състояние:\n{PrettifyJson(oldJson)}\n\nНово състояние:\n{PrettifyJson(newJson)}";
+        }
+
+        return PrettifyJson(details);
+    }
 }
 
 <div class="wrap">
@@ -17,15 +99,15 @@
     <div style="padding: 16px; margin-bottom: 16px; border: 1px solid #000;">
         <form method="get" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
             <div>
-                <label for="action" style="display: block; margin-bottom: 4px;">Действие</label>
-                <select name="action" id="action" style="width: 100%; padding: 8px; border: 1px solid #000;">
+                <label for="logAction" style="display: block; margin-bottom: 4px;">Действие</label>
+                <select name="logAction" id="logAction" style="width: 100%; padding: 8px; border: 1px solid #000;">
                     <option value="">Всички</option>
-                    <option value="Create" selected="@(action == "Create")">Create</option>
-                    <option value="Update" selected="@(action == "Update")">Update</option>
-                    <option value="Delete" selected="@(action == "Delete")">Delete</option>
-                    <option value="Login" selected="@(action == "Login")">Login</option>
-                    <option value="Lock" selected="@(action == "Lock")">Lock</option>
-                    <option value="Unlock" selected="@(action == "Unlock")">Unlock</option>
+                    <option value="Create" selected="@(logAction == "Create")">Create</option>
+                    <option value="Update" selected="@(logAction == "Update")">Update</option>
+                    <option value="Delete" selected="@(logAction == "Delete")">Delete</option>
+                    <option value="Login" selected="@(logAction == "Login")">Login</option>
+                    <option value="Lock" selected="@(logAction == "Lock")">Lock</option>
+                    <option value="Unlock" selected="@(logAction == "Unlock")">Unlock</option>
                 </select>
             </div>
             <div>
@@ -36,6 +118,9 @@
                     <option value="Client" selected="@(entityType == "Client")">Client</option>
                     <option value="Property" selected="@(entityType == "Property")">Property</option>
                     <option value="Visit" selected="@(entityType == "Visit")">Visit</option>
+                    <option value="VisitPayment" selected="@(entityType == "VisitPayment")">VisitPayment</option>
+                    <option value="Expense" selected="@(entityType == "Expense")">Expense</option>
+                    <option value="PayrollSettings" selected="@(entityType == "PayrollSettings")">PayrollSettings</option>
                     <option value="AppSetting" selected="@(entityType == "AppSetting")">AppSetting</option>
                 </select>
             </div>
@@ -53,24 +138,38 @@
                 <th>Потребител</th>
                 <th>Действие</th>
                 <th>Тип</th>
+                <th>Описание</th>
                 <th>Детайли</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var log in Model)
+            @foreach (RealEstateCRM.Models.ViewModels.AuditLogViewModel log in Model)
             {
                 <tr>
                     <td><small>@log.Timestamp.ToString("dd.MM.yyyy HH:mm:ss")</small></td>
                     <td><small>@log.UserEmail</small></td>
-                    <td><span class="badge">@log.Action</span></td>
+                    <td><span class="badge">@GetActionLabel(log.Action)</span></td>
                     <td><small>@log.EntityType</small></td>
-                    <td><small>@log.Details</small></td>
+                    <td><small>@BuildSummary(log)</small></td>
+                    <td>
+                        @if (!string.IsNullOrWhiteSpace(log.Details))
+                        {
+                            <details>
+                                <summary class="btn secondary" style="display: inline-block; cursor: pointer;">Детайли</summary>
+                                <pre style="margin-top: 8px; padding: 8px; border: 1px solid #ddd; max-width: 550px; white-space: pre-wrap; word-break: break-word;">@PrettifyDetails(log.Details)</pre>
+                            </details>
+                        }
+                        else
+                        {
+                            <small style="color: #999;">Няма</small>
+                        }
+                    </td>
                 </tr>
             }
             @if (!Model.Any())
             {
                 <tr>
-                    <td colspan="5" style="text-align: center; padding: 40px; color: #999;">
+                    <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
                         Няма записи
                     </td>
                 </tr>
@@ -83,12 +182,12 @@
         <div style="margin-top: 20px; text-align: center;">
             @if (currentPage > 1)
             {
-                <a href="@Url.Action("AuditLogs", new { page = currentPage - 1, action, entityType })" class="btn secondary" style="margin-right: 4px;">← Предишна</a>
+                <a href="@Url.Action("AuditLogs", new { page = currentPage - 1, logAction, entityType })" class="btn secondary" style="margin-right: 4px;">← Предишна</a>
             }
             <span style="padding: 0 16px;">Страница @currentPage от @totalPages</span>
             @if (currentPage < totalPages)
             {
-                <a href="@Url.Action("AuditLogs", new { page = currentPage + 1, action, entityType })" class="btn secondary" style="margin-left: 4px;">Следваща →</a>
+                <a href="@Url.Action("AuditLogs", new { page = currentPage + 1, logAction, entityType })" class="btn secondary" style="margin-left: 4px;">Следваща →</a>
             }
         </div>
     }

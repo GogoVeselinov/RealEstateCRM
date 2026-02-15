@@ -1,31 +1,40 @@
 @{
-    var payments = (List<RealEstateCRM.Models.Entities.VisitPayment>)(ViewBag.Payments ?? new List<RealEstateCRM.Models.Entities.VisitPayment>());
+    var payments = (List<RealEstateCRM.Models.Entities.VisitPayment>)ViewBag.Payments;
+    var typeNames = new Dictionary<int, string> { {0, "Такса Преглед"}, {1, "Комисион"}, {2, "Депозит"}, {3, "Други"} };
 }
 
-<table>
-    <thead>
-        <tr>
-            <th>Дата</th>
-            <th>Имущество</th>
-            <th>Тип Плащане</th>
-            <th>Управител</th>
-            <th>Сума</th>
+<table style="width:100%;border-collapse:collapse">
+  <thead>
+    <tr style="border-bottom:2px solid #000">
+      <th style="padding:8px;text-align:left">Дата</th>
+      <th style="padding:8px;text-align:left">Имущество</th>
+      <th style="padding:8px;text-align:left">Тип Плащане</th>
+      <th style="padding:8px;text-align:left">Мениджър</th>
+      <th style="padding:8px;text-align:right">Сума</th>
+      <th style="padding:8px;text-align:center">Действие</th>
+    </tr>
+  </thead>
+  <tbody>
+    @if (!payments.Any())
+    {
+      <tr>
+        <td colspan="5" style="padding:20px;text-align:center;color:#999">Няма приходи за периода</td>
+      </tr>
+    }
+    else
+    {
+      @foreach (var p in payments.OrderByDescending(x => x.CreatedAtUtc))
+      {
+        <tr style="border-bottom:1px solid #e5e5e5">
+          <td style="padding:8px">@p.CreatedAtUtc.ToString("dd.MM.yyyy")</td>
+          <td style="padding:8px">@p.Visit.Property.Title</td>
+          <td style="padding:8px">@typeNames.GetValueOrDefault((int)p.PaymentType, p.PaymentType.ToString())</td>
+          <td style="padding:8px">@p.Visit.OwnerUser?.UserName</td>
+          <td style="padding:8px;text-align:right;font-weight:600">@p.Amount.ToString("F2")</td>
+          <td style="padding:8px;text-align:center">
+            <button type="button" onclick="location.href='/Visits/Details/@p.VisitId'" class="btn secondary" style="padding:4px 8px;font-size:12px">Преглед</button>
         </tr>
-    </thead>
-    <tbody>
-        @if(payments.Count == 0)
-        {
-            <tr><td colspan="5" style="text-align:center;padding:20px">Няма плащания</td></tr>
-        }
-        @foreach(var payment in payments.OrderByDescending(p => p.CreatedAtUtc))
-        {
-            <tr>
-                <td>@payment.CreatedAtUtc.ToString("dd.MM.yyyy")</td>
-                <td>@payment.Visit?.Property?.Title</td>
-                <td>@payment.PaymentType</td>
-            <td>@payment.Visit?.OwnerUser?.UserName</td>
-                <td>@payment.Amount.ToString("F2")€</td>
-            </tr>
-        }
-    </tbody>
+      }
+    }
+  </tbody>
 </table>

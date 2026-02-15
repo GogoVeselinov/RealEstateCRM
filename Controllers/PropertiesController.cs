@@ -8,6 +8,7 @@ using RealEstateCRM.Models.Identity;
 using RealEstateCRM.Models.Entities;
 using RealEstateCRM.Models.Common;
 using RealEstateCRM.Models.ViewModels;
+using System.Text.Json;
 
 namespace RealEstateCRM.Controllers
 {
@@ -91,8 +92,12 @@ namespace RealEstateCRM.Controllers
                 OwnerUserId = user!.Id
             };
             _db.Properties.Add(entity);
-            await _db.SaveChangesAsync();
 
+            // Audit Log
+            CreateAuditLogEntry(user.Id, user.Email ?? "", "Create", "Property", entity.Id.ToString(), 
+                JsonSerializer.Serialize(new { entity.Title, entity.Address, entity.Type, entity.Status, entity.Price, entity.Currency }));
+
+            await _db.SaveChangesAsync();
             return Ok(new { ok = true });
         }
 
@@ -143,6 +148,8 @@ namespace RealEstateCRM.Controllers
                 if (p.OwnerUserId != me) return Forbid();
             }
 
+            var oldData = JsonSerializer.Serialize(new { p.Title, p.Address, p.Type, p.Status, p.Price, p.Currency, p.AreaSqM, p.Rooms });
+
             p.Title = vm.Title.Trim();
             p.Address = vm.Address.Trim();
             p.Type = vm.Type;
@@ -153,7 +160,14 @@ namespace RealEstateCRM.Controllers
             p.Rooms = vm.Rooms;
             p.SellerClientId = vm.SellerClientId;
 
+            // Audit Log
+            var user = await _um.GetUserAsync(User);
+            var newData = JsonSerializer.Serialize(new { p.Title, p.Address, p.Type, p.Status, p.Price, p.Currency, p.AreaSqM, p.Rooms });
+            CreateAuditLogEntry(user!.Id, user.Email ?? "", "Update", "Property", p.Id.ToString(), 
+                $"Old: {oldData} | New: {newData}");
+
             await _db.SaveChangesAsync();
+
             return Ok(new {
                 ok = true,
                 id = p.Id,
@@ -181,6 +195,12 @@ namespace RealEstateCRM.Controllers
             }
 
             p.IsDeleted = true;
+
+            // Audit Log
+            var user = await _um.GetUserAsync(User);
+            CreateAuditLogEntry(user!.Id, user.Email ?? "", "Delete", "Property", p.Id.ToString(), 
+                JsonSerializer.Serialize(new { p.Title, p.Address, p.Type, p.Status, p.Price }));
+
             await _db.SaveChangesAsync();
             return Ok(new {
                 ok = true,
@@ -236,12 +256,20 @@ namespace RealEstateCRM.Controllers
             }
 
             // Only update provided fields
+            var oldData = JsonSerializer.Serialize(new { p.Title, p.Address, p.Price, p.Currency, p.Type, p.Status });
+
             if (dto.Title != null) p.Title = dto.Title.Trim();
             if (dto.Address != null) p.Address = dto.Address.Trim();
             if (dto.Price.HasValue) p.Price = dto.Price.Value;
             if (dto.Currency != null) p.Currency = dto.Currency.Trim();
             if (dto.Type.HasValue) p.Type = dto.Type.Value;
             if (dto.Status.HasValue) p.Status = dto.Status.Value;
+
+            // Audit Log
+            var user = await _um.GetUserAsync(User);
+            var newData = JsonSerializer.Serialize(new { p.Title, p.Address, p.Price, p.Currency, p.Type, p.Status });
+            CreateAuditLogEntry(user!.Id, user.Email ?? "", "Update", "Property", p.Id.ToString(), 
+                $"Inline Edit - Old: {oldData} | New: {newData}");
 
             await _db.SaveChangesAsync();
             return Ok(new {
@@ -265,6 +293,21 @@ namespace RealEstateCRM.Controllers
             public string? Currency { get; set; }
             public PropertyType? Type { get; set; }
             public ListingStatus? Status { get; set; }
+        }
+
+        private void CreateAuditLogEntry(string userId, string userEmail, string action, string entityType, string entityId, string? details)
+        {
+            var auditLog = new AuditLog
+            {
+                UserId = userId,
+                UserEmail = userEmail,
+                Action = action,
+                EntityType = entityType,
+                EntityId = entityId,
+                Details = details,
+                Timestamp = DateTime.UtcNow
+            };
+            _db.AuditLogs.Add(auditLog);
         }
     }
 }

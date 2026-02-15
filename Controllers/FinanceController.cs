@@ -6,6 +6,7 @@ using RealEstateCRM.Data;
 using RealEstateCRM.Models.Common;
 using RealEstateCRM.Models.Entities;
 using RealEstateCRM.Models.Identity;
+using System.Text.Json;
 
 namespace RealEstateCRM.Controllers;
 
@@ -30,9 +31,12 @@ public class FinanceController : Controller
         if (!from.HasValue) from = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
         if (!to.HasValue) to = from.Value.AddMonths(1).AddSeconds(-1);
 
+        var fromDate = from.Value.Date;
+        var toDate = to.Value.Date.AddDays(1).AddTicks(-1);
+
         // Get income data (VisitPayments in period)
         var payments = await _db.VisitPayments
-            .Where(p => !p.IsDeleted && p.CreatedAtUtc >= from && p.CreatedAtUtc <= to)
+            .Where(p => !p.IsDeleted && p.CreatedAtUtc >= fromDate && p.CreatedAtUtc <= toDate)
             .Include(p => p.Visit)
             .ThenInclude(v => v.Property)
             .Include(p => p.Visit)
@@ -43,7 +47,7 @@ public class FinanceController : Controller
 
         // Get expenses in period
         var expenses = await _db.Expenses
-            .Where(e => !e.IsDeleted && e.CreatedAtUtc >= from && e.CreatedAtUtc <= to)
+            .Where(e => !e.IsDeleted && e.CreatedAtUtc >= fromDate && e.CreatedAtUtc <= toDate)
             .ToListAsync();
 
         var totalExpenses = expenses.Sum(e => e.Amount);
@@ -62,7 +66,7 @@ public class FinanceController : Controller
 
         // Get all managers (users with Manager role)
         var managers = await _um.GetUsersInRoleAsync(AppRoles.Manager);
-        var payrollData = new List<dynamic>();
+        var payrollData = new List<object>();
 
         foreach (var manager in managers)
         {
@@ -80,7 +84,7 @@ public class FinanceController : Controller
             var commissionAmount = (managerPayments * commPercentage) / 100;
 
             var completedVisits = await _db.Visits
-                .Where(v => !v.IsDeleted && v.OwnerUserId == manager.Id && v.Status == VisitStatus.Completed && v.CreatedAtUtc >= from && v.CreatedAtUtc <= to)
+                .Where(v => !v.IsDeleted && v.OwnerUserId == manager.Id && v.Status == VisitStatus.Completed && v.CreatedAtUtc >= fromDate && v.CreatedAtUtc <= toDate)
                 .CountAsync();
 
             var visitBonusAmount = completedVisits * visitBonus;
@@ -88,7 +92,7 @@ public class FinanceController : Controller
 
             payrollData.Add(new
             {
-                ManagerName = manager.UserName,
+                ManagerName = manager.UserName ?? string.Empty,
                 BaseSalary = baseSalary,
                 CommissionPercentage = commPercentage,
                 CommissionAmount = commissionAmount,
@@ -99,8 +103,8 @@ public class FinanceController : Controller
             });
         }
 
-        ViewBag.From = from;
-        ViewBag.To = to;
+        ViewBag.From = fromDate;
+        ViewBag.To = toDate;
         ViewBag.TotalIncome = totalIncome;
         ViewBag.TotalExpenses = totalExpenses;
         ViewBag.NetProfit = netProfit;
@@ -136,8 +140,12 @@ public class FinanceController : Controller
         };
 
         _db.Expenses.Add(expense);
-        await _db.SaveChangesAsync();
 
+        // Audit Log
+        CreateAuditLogEntry(user.Id, user.Email ?? "", "Create", "Expense", expense.Id.ToString(), 
+            JsonSerializer.Serialize(new { expense.Category, expense.Amount, expense.Description }));
+
+        await _db.SaveChangesAsync();
         return Ok(new { ok = true, id = expense.Id });
     }
 
@@ -149,8 +157,13 @@ public class FinanceController : Controller
         if (expense == null) return NotFound();
 
         expense.IsDeleted = true;
-        await _db.SaveChangesAsync();
 
+        // Audit Log
+        var user = await _um.GetUserAsync(User);
+        CreateAuditLogEntry(user!.Id, user.Email ?? "", "Delete", "Expense", expense.Id.ToString(), 
+            JsonSerializer.Serialize(new { expense.Category, expense.Amount, expense.Description }));
+
+        await _db.SaveChangesAsync();
         return Ok(new { ok = true });
     }
 
@@ -176,8 +189,13 @@ public class FinanceController : Controller
             .Where(p => p.IsGlobal && !p.IsDeleted)
             .FirstOrDefaultAsync();
 
+        var user = await _um.GetUserAsync(User);
+        string action;
+        string oldData = "";
+
         if (settings == null)
         {
+            action = "Create";
             settings = new PayrollSettings
             {
                 BaseSalary = baseSalary,
@@ -189,12 +207,34 @@ public class FinanceController : Controller
         }
         else
         {
+            action = "Update";
+            oldData = JsonSerializer.Serialize(new { settings.BaseSalary, settings.CommissionPercentage, settings.VisitBonus });
             settings.BaseSalary = baseSalary;
             settings.CommissionPercentage = commissionPercentage;
             settings.VisitBonus = visitBonus;
         }
 
+        // Audit Log
+        var newData = JsonSerializer.Serialize(new { settings.BaseSalary, settings.CommissionPercentage, settings.VisitBonus });
+        var details = action == "Update" ? $"Old: {oldData} | New: {newData}" : newData;
+        CreateAuditLogEntry(user!.Id, user.Email ?? "", action, "PayrollSettings", settings.Id.ToString(), details);
+
         await _db.SaveChangesAsync();
         return Ok(new { ok = true });
+    }
+
+    private void CreateAuditLogEntry(string userId, string userEmail, string action, string entityType, string entityId, string? details)
+    {
+        var auditLog = new AuditLog
+        {
+            UserId = userId,
+            UserEmail = userEmail,
+            Action = action,
+            EntityType = entityType,
+            EntityId = entityId,
+            Details = details,
+            Timestamp = DateTime.UtcNow
+        };
+        _db.AuditLogs.Add(auditLog);
     }
 }

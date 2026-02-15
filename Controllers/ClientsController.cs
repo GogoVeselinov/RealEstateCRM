@@ -9,6 +9,7 @@ using RealEstateCRM.Models.Common;
 using RealEstateCRM.Models.Entities;
 namespace RealEstateCRM.Controllers;
 using RealEstateCRM.Models.ViewModels;
+using System.Text.Json;
 
 [Authorize]
 public class ClientsController : Controller
@@ -84,6 +85,11 @@ public class ClientsController : Controller
         };
 
         _db.Clients.Add(entity);
+
+        // Audit Log
+        CreateAuditLogEntry(user.Id, user.Email ?? "", "Create", "Client", entity.Id.ToString(), 
+            JsonSerializer.Serialize(new { entity.FirstName, entity.LastName, entity.Email, entity.Phone, entity.Type }));
+
         await _db.SaveChangesAsync();
         return Ok(new { ok = true });
     }
@@ -131,12 +137,20 @@ public class ClientsController : Controller
             if (c.OwnerUserId != me) return Forbid();
         }
 
+        var oldData = JsonSerializer.Serialize(new { c.FirstName, c.LastName, c.Email, c.Phone, c.Type, c.Comments });
+
         c.FirstName = vm.FirstName;
         c.LastName = vm.LastName;
         c.Email = vm.Email ?? "";
         c.Phone = vm.Phone ?? "";
         c.Type = vm.Type;
         c.Comments = vm.Comments;
+
+        // Audit Log
+        var user = await _um.GetUserAsync(User);
+        var newData = JsonSerializer.Serialize(new { c.FirstName, c.LastName, c.Email, c.Phone, c.Type, c.Comments });
+        CreateAuditLogEntry(user!.Id, user.Email ?? "", "Update", "Client", c.Id.ToString(), 
+            $"Old: {oldData} | New: {newData}");
 
         await _db.SaveChangesAsync();
         return Ok(new { ok = true });
@@ -156,7 +170,28 @@ public class ClientsController : Controller
         }
 
         c.IsDeleted = true;
+
+        // Audit Log
+        var user = await _um.GetUserAsync(User);
+        CreateAuditLogEntry(user!.Id, user.Email ?? "", "Delete", "Client", c.Id.ToString(), 
+            JsonSerializer.Serialize(new { c.FirstName, c.LastName, c.Email }));
+
         await _db.SaveChangesAsync();
         return Ok(new { ok = true });
+    }
+
+    private void CreateAuditLogEntry(string userId, string userEmail, string action, string entityType, string entityId, string? details)
+    {
+        var auditLog = new AuditLog
+        {
+            UserId = userId,
+            UserEmail = userEmail,
+            Action = action,
+            EntityType = entityType,
+            EntityId = entityId,
+            Details = details,
+            Timestamp = DateTime.UtcNow
+        };
+        _db.AuditLogs.Add(auditLog);
     }
 }

@@ -1,37 +1,62 @@
+@model IEnumerable<object>
+
 @{
-    var payrollData = (List<dynamic>)(ViewBag.PayrollData ?? new List<dynamic>());
+  var payrollData = (Model ?? Enumerable.Empty<object>()).ToList();
+
+  string GetString(object row, string propertyName)
+  {
+    var value = row.GetType().GetProperty(propertyName)?.GetValue(row);
+    return value?.ToString() ?? string.Empty;
+  }
+
+  decimal GetDecimal(object row, string propertyName)
+  {
+    var value = row.GetType().GetProperty(propertyName)?.GetValue(row);
+    return value is null ? 0m : Convert.ToDecimal(value);
+  }
+
+  int GetInt(object row, string propertyName)
+  {
+    var value = row.GetType().GetProperty(propertyName)?.GetValue(row);
+    return value is null ? 0 : Convert.ToInt32(value);
+  }
 }
 
-<table>
-    <thead>
-        <tr>
-            <th>Управител</th>
-            <th>Базова заплата</th>
-            <th>% Комисион</th>
-            <th>Сума комисион</th>
-            <th>Бонус за посещение</th>
-            <th>Завършени посещения</th>
-            <th>Сума бонусов</th>
-            <th>Финална заплата</th>
+<table style="width:100%;border-collapse:collapse;font-size:13px">
+  <thead>
+    <tr style="border-bottom:2px solid #000">
+      <th style="padding:8px;text-align:left">Мениджър</th>
+      <th style="padding:8px;text-align:right">База</th>
+      <th style="padding:8px;text-align:center">Комис %</th>
+      <th style="padding:8px;text-align:right">Комис Сума</th>
+      <th style="padding:8px;text-align:center">Оглед Бонус</th>
+      <th style="padding:8px;text-align:center">Брой Огледи</th>
+      <th style="padding:8px;text-align:right">Бонус Сума</th>
+      <th style="padding:8px;text-align:right;font-weight:700">Финална Зарплата</th>
+    </tr>
+  </thead>
+  <tbody>
+    @if (!payrollData.Any())
+    {
+      <tr>
+        <td colspan="8" style="padding:20px;text-align:center;color:#999">Няма мениджъри</td>
+      </tr>
+    }
+    else
+    {
+      @foreach (var row in payrollData)
+      {
+        <tr style="border-bottom:1px solid #e5e5e5">
+          <td style="padding:8px">@GetString(row, "ManagerName")</td>
+          <td style="padding:8px;text-align:right">@GetDecimal(row, "BaseSalary").ToString("F2")</td>
+          <td style="padding:8px;text-align:center">@GetDecimal(row, "CommissionPercentage").ToString("F2")%</td>
+          <td style="padding:8px;text-align:right">@GetDecimal(row, "CommissionAmount").ToString("F2")</td>
+          <td style="padding:8px;text-align:center">@GetDecimal(row, "VisitBonus").ToString("F2")</td>
+          <td style="padding:8px;text-align:center">@GetInt(row, "CompletedVisits")</td>
+          <td style="padding:8px;text-align:right">@GetDecimal(row, "VisitBonusAmount").ToString("F2")</td>
+          <td style="padding:8px;text-align:right;font-weight:700;background:#f5f5f5">@GetDecimal(row, "FinalSalary").ToString("F2")</td>
         </tr>
-    </thead>
-    <tbody>
-        @if(payrollData.Count == 0)
-        {
-            <tr><td colspan="8" style="text-align:center;padding:20px">Няма данни</td></tr>
-        }
-        @foreach(var item in payrollData)
-        {
-            <tr>
-                <td>@item.ManagerName</td>
-                <td>@item.BaseSalary.ToString("F2")</td>
-                <td>@item.CommissionPercentage.ToString("F2")%</td>
-                <td>@item.CommissionAmount.ToString("F2")</td>
-                <td>@item.VisitBonus.ToString("F2")</td>
-                <td>@item.CompletedVisits</td>
-                <td>@item.VisitBonusAmount.ToString("F2")</td>
-                <td style="font-weight:700">@item.FinalSalary.ToString("F2")</td>
-            </tr>
-        }
-    </tbody>
+      }
+    }
+  </tbody>
 </table>
